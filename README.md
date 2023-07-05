@@ -1,0 +1,1 @@
+create superuser v@quant.study123456
