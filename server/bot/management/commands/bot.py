@@ -16,15 +16,12 @@ from telegram.ext import filters, ApplicationBuilder, ContextTypes, CommandHandl
 
 
 # обработчик команды старт
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = await get_user(update=update)
     if user:
         await context.bot.send_message(chat_id=update.effective_chat.id, text=f"С возвращением, {user.first_name}!")
     else:
-        keyboard = [[InlineKeyboardButton(
-            "Зарегистрироваться", callback_data="reg")]]
-        markup = InlineKeyboardMarkup(keyboard)
-        await context.bot.send_message(chat_id=update.effective_chat.id, text="Привет! Я бот с задачами ЕГЭ. Давай знакомиться!", reply_markup=markup)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="Привет! Я бот с задачами ЕГЭ. Давай знакомиться! Чтобы воспользоваться мной, нужно пройти простую регистрацию. Для этого нажми /reg")
 
 
 # обработчик другизх команд, возвращает эхо
@@ -37,19 +34,20 @@ async def check_member(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_message(chat_id=update.effective_chat.id, text=f'Подписка на канал @fizika_na_izi отсутствует')
 
 
-# обработчик другизх команд, возвращает эхо
-async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=update.message.text)
-
-
 # обработчик коллбеков
-async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Parses the CallbackQuery and updates the message text."""
     query = update.callback_query
 
     # CallbackQueries need to be answered, even if no notification to the user is needed
     # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
     await query.answer()
+
+    match query.data:
+        case 'reg':
+            print("reg")
+        case _:
+            print("unknown query")
 
     await query.edit_message_text(text=f"Selected option: {query.data}")
 
@@ -58,14 +56,14 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 application = ApplicationBuilder().token(
     '6097853298:AAFd-KCP9WeVeQBBEQjK8Eknv7cagY27ao4').build()
 
-start_handler = CommandHandler('start', start)
+start_handler = CommandHandler('start', start_handler)
 application.add_handler(start_handler)
 
 member_handler = MessageHandler(
     filters.Regex('^member$'), check_member)
 application.add_handler(member_handler)
 
-application.add_handler(CallbackQueryHandler(button))
+application.add_handler(CallbackQueryHandler(callback_handler))
 
 # Процесс регистрации по команде /reg
 application.add_handler(reg_handler)
