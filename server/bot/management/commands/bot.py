@@ -67,6 +67,7 @@ application.add_handler(member_handler)
 
 application.add_handler(CallbackQueryHandler(button))
 
+# Процесс регистрации по команде /reg
 application.add_handler(reg_handler)
 
 # Название класса обязательно - "Command"

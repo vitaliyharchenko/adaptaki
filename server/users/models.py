@@ -13,8 +13,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True, verbose_name="Профиль активен?")
     is_staff = models.BooleanField(default=False, verbose_name="Права администратора")
 
-    telegram_id = models.CharField(max_length=15, blank=True, unique=True, verbose_name="Id в телеграм")
-    telegram_username = models.CharField(max_length=50, blank=True, unique=True, verbose_name="Username в Telegram")
+    telegram_id = models.CharField(max_length=15, blank=True, unique=True, null=True, verbose_name="Id в телеграм")
+    telegram_username = models.CharField(max_length=50, blank=True, unique=True, null=True, verbose_name="Username в Telegram")
 
     objects = UserManager()
 
