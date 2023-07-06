@@ -24,6 +24,54 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_message(chat_id=update.effective_chat.id, text="Привет! Я бот с задачами ЕГЭ. Давай знакомиться! Чтобы воспользоваться мной, нужно пройти простую регистрацию. Для этого нажми /reg")
 
 
+async def menu_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    keyboard = [
+        [
+            InlineKeyboardButton("Option 1", callback_data="m1"),
+            InlineKeyboardButton("Option 2", callback_data="m2"),
+            InlineKeyboardButton("Option 3", callback_data="m3"),
+        ],
+    ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    await update.message.reply_text("Главное меню", reply_markup=reply_markup)
+
+
+async def menu_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = await get_user(update=update)
+
+    query = update.callback_query
+    await query.answer()
+
+    keyboard = [
+        [
+            InlineKeyboardButton("Option 1", callback_data="m1"),
+            InlineKeyboardButton("Option 2", callback_data="m2"),
+            InlineKeyboardButton("Option 3", callback_data="m3"),
+        ],
+    ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    await query.edit_message_text("Главное меню", reply_markup=reply_markup)
+
+
+async def first_menu_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = await get_user(update=update)
+
+    query = update.callback_query
+    await query.answer()
+
+    keyboard = [[InlineKeyboardButton('Submenu 1-1', callback_data='m1_1')],
+              [InlineKeyboardButton('Submenu 1-2', callback_data='m1_2')],
+              [InlineKeyboardButton('Main menu', callback_data='main')]]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    await query.edit_message_text("Первое меню", reply_markup=reply_markup)
+
+
 # обработчик другизх команд, возвращает эхо
 async def check_member(update: Update, context: ContextTypes.DEFAULT_TYPE):
     is_subscribed = await check_subscription(update, context)
@@ -63,14 +111,16 @@ member_handler = MessageHandler(
     filters.Regex('^member$'), check_member)
 application.add_handler(member_handler)
 
-application.add_handler(CallbackQueryHandler(callback_handler))
 
 # Процесс регистрации по команде /reg
 application.add_handler(reg_handler)
 
+# Обработка меню
+application.add_handler(CommandHandler('menu', menu_start))
+application.add_handler(CallbackQueryHandler(menu_handler, pattern='main'))
+application.add_handler(CallbackQueryHandler(first_menu_handler, pattern='m1'))
+
 # Название класса обязательно - "Command"
-
-
 class Command(BaseCommand):
     # Используется как описание команды обычно
     help = 'Implemented to Django application telegram bot setup command'
