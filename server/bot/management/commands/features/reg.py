@@ -1,4 +1,5 @@
 from asgiref.sync import sync_to_async
+from django.db.utils import IntegrityError
 
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import (
@@ -27,7 +28,7 @@ async def reg_start(update, context):
             text=f"{user.first_name} {user.last_name}, вы уже зарегистрированы")
         return ConversationHandler.END
     else:
-        await context.bot.send_message(chat_id=update.effective_chat.id, text="Для работы в нашем боте нужно пройти короткую регистрацию. Напиши свой телефон")
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="Для работы в нашем боте нужно пройти короткую регистрацию. Напиши свое имя")
         return FIRST_NAME
 
 
@@ -55,17 +56,21 @@ async def phone(update, context):
     print(first_name)
     print(last_name)
 
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=f"Спасибо, {first_name} {last_name}! Создан профиль, привязанный к телефону: {phone}")
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=f"Спасибо, {first_name} {last_name}! Пробуем создать профиль, привязанный к телефону: {phone}")
 
-    user = await sync_to_async(User.objects.create_user)(phone=phone)
-    print("Create user", user)
-    user.first_name = first_name
-    user.last_name = last_name
-    user.telegram_id = update.effective_user.id
-    user.telegram_username = update.effective_user.username
+    try:
+        user = await sync_to_async(User.objects.create_user)(phone=phone)
+        print("Create user", user)
+        user.first_name = first_name
+        user.last_name = last_name
+        user.telegram_id = update.effective_user.id
+        user.telegram_username = update.effective_user.username
+        user.save()
 
-    print
-    user.save()
+    except IntegrityError:
+        print("Пользователь с такими данными уже существует")
+    except BaseException:
+        print("Не получилось зарегистрироваться")
 
     return ConversationHandler.END
 
