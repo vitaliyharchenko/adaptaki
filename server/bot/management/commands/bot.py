@@ -102,7 +102,7 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -
 
 # объявление переменной бота
 application = ApplicationBuilder().token(
-    '6097853298:AAFd-KCP9WeVeQBBEQjK8Eknv7cagY27ao4').build()
+    '6097853298:AAGbBS8rfloSwbcOhqwRP3kaLfGfJH687uA').build()
 
 start_handler = CommandHandler('start', start_handler)
 application.add_handler(start_handler)

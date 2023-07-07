@@ -2,7 +2,7 @@ from asgiref.sync import sync_to_async
 from django.db.utils import IntegrityError
 import phonenumbers
 
-from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
+from telegram import ReplyKeyboardMarkup, Update, ReplyKeyboardRemove
 from telegram.ext import (
     CommandHandler,
     ContextTypes,
@@ -11,13 +11,14 @@ from telegram.ext import (
     filters
 )
 from .auth import get_user
-from users.models import User
+from users.models import User, CLASSES
 
 # States for conversation
 FIRST_NAME = 'REG_FIRST_NAME'
 LAST_NAME = 'REG_LAST_NAME'
+CLASS = 'REG_CLASS'
 PHONE = 'REG_PHONE'
-CONFIRM = 'CONFIRM'
+CONFIRM = 'REG_CONFIRM'
 
 
 async def reg_start(update, context):
@@ -43,7 +44,26 @@ async def first_name(update, context):
 async def last_name(update, context):
     last_name = update.message.text
     context.user_data['last_name'] = last_name
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="Теперь введите телефон в формате 7XXXXXXXXXX")
+
+    keyboard = []
+    for cl in CLASSES:
+        keyboard.append([cl[1]])
+
+    reply_markup = ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
+
+    await update.message.reply_text("В каком классе ты учишься?", reply_markup=reply_markup)
+
+    return CLASS
+
+
+async def class_of(update, context):
+    class_of_user = update.message.text
+
+    for cl in CLASSES:
+        if class_of_user == cl[1]:
+            context.user_data['class_of'] = cl[0]
+
+    await context.bot.send_message(chat_id=update.effective_chat.id, text="Теперь введите телефон в формате 7XXXXXXXXXX", reply_markup=ReplyKeyboardRemove())
     return PHONE
 
 
@@ -60,9 +80,6 @@ async def phone(update, context):
     except phonenumbers.phonenumberutil.NumberParseException:
         await context.bot.send_message(chat_id=update.effective_chat.id, text=f"Введен некорректный номер телефона, попробуй снова в формате 7XXXXXXXXXX")
         return PHONE
-        
-    first_name = context.user_data.get('first_name', 'Not found')
-    last_name = context.user_data.get('last_name', 'Not found')
 
     try:
         user = await sync_to_async(User.objects.create_user)(phone=phone)
@@ -75,12 +92,19 @@ async def phone(update, context):
         print("Не получилось зарегистрироваться")
         return ConversationHandler.END
 
+    first_name = context.user_data.get('first_name', 'Not found')
+    last_name = context.user_data.get('last_name', 'Not found')
+    class_of = context.user_data.get('class_of', 'Not found')
+
+    print(first_name, last_name, class_of)
+
     user = await sync_to_async(User.objects.get)(phone=phone)
     user.first_name = first_name
     user.last_name = last_name
+    user.class_of = class_of
     user.telegram_id = update.effective_user.id
     user.telegram_username = update.effective_user.username
-    
+
     try:
         await sync_to_async(user.save)()
         await context.bot.send_message(chat_id=update.effective_chat.id, text=f"{first_name}, вы успешно зарегистрированы!")
@@ -89,7 +113,6 @@ async def phone(update, context):
         print("Телеграм уже был в базе", e)
         await context.bot.send_message(chat_id=update.effective_chat.id, text=f"{first_name}, ваш профиль Telegram уже был зарегистрирован")
         return ConversationHandler.END
-
 
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -105,6 +128,7 @@ reg_handler = ConversationHandler(
         PHONE: [MessageHandler(filters.TEXT, phone)],
         FIRST_NAME: [MessageHandler(filters.TEXT, first_name)],
         LAST_NAME: [MessageHandler(filters.TEXT, last_name)],
+        CLASS: [MessageHandler(filters.TEXT, class_of)]
     },
     fallbacks=[CommandHandler("cancel", cancel)],
 )
