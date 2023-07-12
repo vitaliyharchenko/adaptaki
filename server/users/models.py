@@ -5,6 +5,17 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from .managers import UserManager
 
 
+CLASSES = (
+    ('parent', 'Родитель'),
+    ('old', 'Выпускник'),
+    ('2024', '11 класс'),
+    ('2025', '10 класс'),
+    ('2026', '9 класс'),
+    ('2027', '8 класс'),
+    ('2028', '7 класс'),
+)
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=30, unique=True, verbose_name="Телефон")
     first_name = models.CharField(max_length=30, blank=True, verbose_name="Имя")
@@ -12,9 +23,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(auto_now_add=True, verbose_name="Дата регистрации")
     is_active = models.BooleanField(default=True, verbose_name="Профиль активен?")
     is_staff = models.BooleanField(default=False, verbose_name="Права администратора")
+    class_of = models.CharField(max_length=10, choices = CLASSES, blank=True)
 
-    telegram_id = models.CharField(max_length=15, blank=True, unique=True, verbose_name="Id в телеграм")
-    telegram_username = models.CharField(max_length=50, blank=True, unique=True, verbose_name="Username в Telegram")
+    telegram_id = models.CharField(max_length=15, blank=True, unique=True, null=True, verbose_name="Id в телеграм")
+    telegram_username = models.CharField(max_length=50, blank=True, unique=True, null=True, verbose_name="Username в Telegram")
 
     objects = UserManager()
 

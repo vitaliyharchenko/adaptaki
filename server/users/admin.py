@@ -59,13 +59,15 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ["phone", "first_name", "last_name", "is_staff"]
+    list_display = ["phone", "first_name", "last_name", "telegram_username", "date_joined", "class_of", "is_staff"]
     list_filter = ["is_staff"]
+    readonly_fields=['date_joined']
     fieldsets = [
         (None, {"fields": ["phone", "password"]}),
-        ("Персональная информация", {"fields": ["first_name", "last_name"]}),
+        ("Персональная информация", {"fields": ["first_name", "last_name", "class_of"]}),
         ("Доступы", {"fields": ["is_staff"]}),
         ("Телеграм", {"fields": ["telegram_id", "telegram_username"]}),
+        ("Дополнительно", {"fields": ["date_joined"]}),
     ]
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
