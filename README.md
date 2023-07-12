@@ -1,1 +1,1 @@
-create superuser v@quant.study123456
+source env/bin/activate
