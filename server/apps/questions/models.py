@@ -66,10 +66,10 @@ class Question(models.Model):
     )
 
     # For graph
-    nodes = models.ManyToManyField('graph.Node', blank=True, null=True)
+    nodes = models.ManyToManyField('graph.Node', blank=True, verbose_name="Вершины графа")
 
     # For exam tree
-    themes = models.ManyToManyField('tags.ThemeTag', blank=True)
+    trainer_tag = models.ManyToManyField('trainer.TrainerTag', blank=True, verbose_name="Экзаменационный тег")
 
     class Meta:
         verbose_name = 'задание'
@@ -94,7 +94,8 @@ def option_image_directory_path(instance, filename):
 class QuestionOption(Question):
     question = models.ForeignKey(
         Question,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="option_question"
     )
 
     is_true = models.BooleanField(

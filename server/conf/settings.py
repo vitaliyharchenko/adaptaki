@@ -46,7 +46,9 @@ INSTALLED_APPS = [
     'markdownx',
 
     # My apps
+    'apps.graph',
     'apps.questions',
+    'apps.trainer',
     'apps.users',
 ]
 

@@ -1,0 +1,14 @@
+[{
+    "model": "trainer.exam",
+    "pk": 6,
+    "fields": {
+        "title": "\u0415\u0413\u042d"
+    }
+},
+{
+    "model": "trainer.exam",
+    "pk": 7,
+    "fields": {
+        "title": "\u041e\u0413\u042d"
+    }
+}]
