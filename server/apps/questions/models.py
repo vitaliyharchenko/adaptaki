@@ -65,11 +65,17 @@ class Question(models.Model):
         default=ONE_WRONG_MINUS_ONE,
     )
 
+    type = models.SmallIntegerField(
+        verbose_name='Тип задания',
+        choices=TYPE_CHOICES,
+        default=1,
+    )
+
     # For graph
     nodes = models.ManyToManyField('graph.Node', blank=True, verbose_name="Вершины графа")
 
     # For exam tree
-    trainer_tag = models.ManyToManyField('trainer.TrainerTag', blank=True, verbose_name="Экзаменационный тег")
+    trainer_tags = models.ManyToManyField('trainer.TrainerTag', blank=True, verbose_name="Экзаменационный тег")
 
     class Meta:
         verbose_name = 'задание'
@@ -91,7 +97,7 @@ def option_image_directory_path(instance, filename):
 
 
 # вариант ответа
-class QuestionOption(Question):
+class QuestionOption(models.Model):
     question = models.ForeignKey(
         Question,
         on_delete=models.CASCADE,
@@ -128,4 +134,3 @@ class QuestionOption(Question):
 
     def __str__(self):
         return self.option_text
-

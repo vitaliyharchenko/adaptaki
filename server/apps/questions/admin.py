@@ -12,3 +12,9 @@ class QuestionOptionInline(admin.StackedInline):
 @admin.register(Question)
 class QuestionAdmin(MarkdownxModelAdmin):
     inlines = [QuestionOptionInline]
+    pass
+
+
+@admin.register(QuestionOption)
+class QuestionOptionAdmin(MarkdownxModelAdmin):
+    pass
