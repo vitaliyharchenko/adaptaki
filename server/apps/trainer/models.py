@@ -10,8 +10,8 @@ class Exam(models.Model):
         max_length=300)
 
     class Meta:
-        verbose_name = '1. экзамен'
-        verbose_name_plural = '1. экзамены'
+        verbose_name = 'экзамен'
+        verbose_name_plural = 'экзамены'
 
     def __str__(self):
         return self.title
@@ -27,8 +27,8 @@ class NumTitle(models.Model):
         max_length=300)
 
     class Meta:
-        verbose_name = '2. заголовок для номера из экзамена'
-        verbose_name_plural = '2. заголовки для номеров из экзамена'
+        verbose_name = 'заголовок для номера из экзамена'
+        verbose_name_plural = 'заголовки для номеров из экзамена'
 
     def __str__(self):
         return str(self.title)
@@ -43,8 +43,8 @@ class Theme(models.Model):
         max_length=300)
 
     class Meta:
-        verbose_name = '3. тема задачи'
-        verbose_name_plural = '3. темы задач'
+        verbose_name = 'тема задачи'
+        verbose_name_plural = 'темы задач'
 
     def __str__(self):
         return str(self.title)
@@ -100,8 +100,8 @@ class TrainerTag(models.Model):
     )
 
     class Meta:
-        verbose_name = '4. указатель на рубрикатор'
-        verbose_name_plural = '4. указатели на рубрикатор'
+        verbose_name = 'указатель на рубрикатор'
+        verbose_name_plural = 'указатели на рубрикатор'
 
     def __str__(self):
         return f"{self.exam}_{self.subject}_{self.num}_{self.theme}"

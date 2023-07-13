@@ -25,16 +25,18 @@ class Concept(models.Model):
     title = models.CharField(
         verbose_name='Название концепта',
         max_length=300)
-    
+
     subject = models.ForeignKey(
         Subject,
         default=None,
         null=True,
-        on_delete=models.SET_DEFAULT
+        on_delete=models.SET_DEFAULT,
+        verbose_name='Предмет'
     )
 
     is_active = models.BooleanField(
-        default=False
+        default=False,
+        verbose_name='Активен?'
     )
 
     class Meta:
@@ -42,7 +44,7 @@ class Concept(models.Model):
         verbose_name_plural = 'концепты'
 
     def __str__(self):
-        return f"{self.pk}_{self.subject}_{self.concept}"
+        return f"{self.pk}_{self.subject}_{self.title}"
 
 
 # Типы вершин графа
@@ -97,18 +99,6 @@ class Node(models.Model):
 
     def __str__(self):
         return str(self.title)
-
-    def count_questions(self):
-        questions = Question.objects.filter(nodes=self)
-        return questions.count()
-
-    def questions_list(self):
-        questions = Question.objects.filter(nodes=self).values()
-        return questions
-
-    def delete(self, *args, **kwargs):
-
-        super(Node, self).delete(*args, **kwargs)
 
 
 class NodeRelation(models.Model):
