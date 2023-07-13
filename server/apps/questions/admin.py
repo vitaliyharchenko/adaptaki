@@ -1,5 +1,7 @@
 from django.contrib import admin
-from markdownx.admin import MarkdownxModelAdmin
+from django.db import models
+from django.forms import ModelForm
+from markdownx.widgets import AdminMarkdownxWidget
 from .models import Question, QuestionOption
 
 
@@ -9,7 +11,20 @@ class QuestionOptionInline(admin.StackedInline):
     extra = 0
 
 
+class Textarea(AdminMarkdownxWidget):
+    template_name = 'markdownx/widget1.html'
+
+
+class QuestionAdminForm(ModelForm):
+    class Meta:
+        model = Question
+        fields = "__all__"
+        widgets = {
+            "question_text": Textarea(),
+            "explanation_text": Textarea(),
+        }
+
 @admin.register(Question)
-class QuestionAdmin(MarkdownxModelAdmin):
+class QuestionAdmin(admin.ModelAdmin):
     inlines = [QuestionOptionInline]
-    pass
+    form = QuestionAdminForm
