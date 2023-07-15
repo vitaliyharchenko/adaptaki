@@ -43,6 +43,7 @@ class SubjectExamNumber(models.Model):
         return f'{self.subject_exam}, №{self.num} {self.title}'
 
 
+# Deprecated
 class NumTitle(models.Model):
     """
         Заголовок группы заданий под одним номером
@@ -60,20 +61,26 @@ class NumTitle(models.Model):
         return str(self.title)
 
 
-class Theme(models.Model):
+class ExamTag(models.Model):
     """
         Тема задачи
     """
     title = models.CharField(
         verbose_name='Тема задачи',
         max_length=300)
+    subject_exam_number = models.ForeignKey(
+        'trainer.subjectexamnumber', null=True, on_delete=models.CASCADE)
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name="Тег отображается?"
+    )
 
     class Meta:
         verbose_name = 'тема задачи'
         verbose_name_plural = 'темы задач'
 
     def __str__(self):
-        return str(self.title)
+        return f"{self.subject_exam_number} {self.title} {self.is_active}"
 
 
 class TrainerTag(models.Model):
@@ -115,7 +122,7 @@ class TrainerTag(models.Model):
     )
 
     theme = models.ForeignKey(
-        Theme,
+        ExamTag,
         on_delete=models.CASCADE,
         verbose_name="Название темы"
     )

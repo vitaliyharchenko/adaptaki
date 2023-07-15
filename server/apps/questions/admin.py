@@ -24,7 +24,9 @@ class QuestionAdminForm(ModelForm):
             "explanation_text": Textarea(),
         }
 
+
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
     inlines = [QuestionOptionInline]
     form = QuestionAdminForm
+    list_filter = ["exam_tag"]

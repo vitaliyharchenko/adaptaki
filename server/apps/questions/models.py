@@ -37,7 +37,8 @@ TYPE_CHOICES = [
 class Question(models.Model):
     # основное
     question_text = MarkdownxField(verbose_name='Текст вопроса')
-    explanation_text = MarkdownxField(verbose_name='Комментарий (пояснение) к вопросу', blank=True)
+    explanation_text = MarkdownxField(
+        verbose_name='Комментарий (пояснение) к вопросу', blank=True)
 
     # картинки
     image = models.ImageField(
@@ -72,10 +73,14 @@ class Question(models.Model):
     )
 
     # For graph
-    nodes = models.ManyToManyField('graph.Node', blank=True, verbose_name="Вершины графа")
+    nodes = models.ManyToManyField(
+        'graph.Node', blank=True, verbose_name="Вершины графа")
 
     # For exam tree
-    trainer_tags = models.ManyToManyField('trainer.TrainerTag', blank=True, verbose_name="Экзаменационный тег")
+    trainer_tags = models.ManyToManyField(
+        'trainer.TrainerTag', blank=True, verbose_name="Экзаменационный тег (old)")
+    exam_tag = models.ForeignKey(
+        'trainer.ExamTag', null=True, verbose_name="Тег экзамена (new)", on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = 'задание'

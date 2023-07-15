@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Exam, SubjectExam, SubjectExamNumber, NumTitle, Theme, TrainerTag
+from .models import Exam, SubjectExam, SubjectExamNumber, NumTitle, ExamTag, TrainerTag
 
 
 @admin.register(Exam)
@@ -22,11 +22,11 @@ class NumTitleAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Theme)
-class ThemeAdmin(admin.ModelAdmin):
-    pass
+@admin.register(ExamTag)
+class ExamTagAdmin(admin.ModelAdmin):
+    list_filter = ["subject_exam_number", "is_active"]
 
 
 @admin.register(TrainerTag)
 class TrainerTagAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ["subject", "exam", "num"]
