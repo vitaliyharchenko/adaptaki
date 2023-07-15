@@ -10,11 +10,37 @@ class Exam(models.Model):
         max_length=300)
 
     class Meta:
-        verbose_name = 'экзамен'
-        verbose_name_plural = 'экзамены'
+        verbose_name = 'вид экзамена'
+        verbose_name_plural = 'виды экзаменов'
 
     def __str__(self):
         return self.title
+
+
+class SubjectExam(models.Model):
+    exam = models.ForeignKey('trainer.Exam', on_delete=models.CASCADE)
+    subject = models.ForeignKey('graph.Subject', on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'экзамен по предмету'
+        verbose_name_plural = 'экзамены по предметам'
+
+    def __str__(self):
+        return f'{self.exam}, {self.subject}'
+
+
+class SubjectExamNumber(models.Model):
+    subject_exam = models.ForeignKey(
+        'trainer.SubjectExam', on_delete=models.CASCADE)
+    num = models.SmallIntegerField(verbose_name='Номер задания')
+    title = models.CharField(max_length=200, blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'номер в экзамене по предмету'
+        verbose_name_plural = 'номера в экзамене по предметам'
+
+    def __str__(self):
+        return f'{self.subject_exam}, №{self.num} {self.title}'
 
 
 class NumTitle(models.Model):
