@@ -10,7 +10,7 @@
 -   Exam (ЕГЭ)
     -   SubjectExam ЕГЭ по математике, привязан предмет и экзамен)
         -   SubjectExamNumber Номер 1 (номер, заголовок, флаг активности) - к нему привязан SubjectExam
-            -   Theme (как было)
+            -   ExamTag (как было)
 
 TODOs:
 
