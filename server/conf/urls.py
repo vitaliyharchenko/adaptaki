@@ -23,6 +23,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
 
+    # Apps
+    path('', include('apps.questions.urls')),
+
     # Modules
     path('api-auth/', include('rest_framework.urls')),
     path('markdownx/', include('markdownx.urls')),
