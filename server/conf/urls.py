@@ -25,6 +25,7 @@ urlpatterns = [
 
     # Apps
     path('', include('apps.questions.urls')),
+    path('', include('apps.trainer.urls')),
 
     # Modules
     path('api-auth/', include('rest_framework.urls')),

@@ -1,0 +1,46 @@
+from rest_framework import serializers
+from apps.graph.models import Subject
+from apps.graph.serializers import SubjectSerializer
+from .models import SubjectExam, Exam, SubjectExamNumber, ExamTag
+
+
+class ExamSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Exam
+        fields = ['pk', 'title']
+
+
+class ExamTagSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ExamTag
+        fields = ['pk', 'title', 'is_active']
+
+
+class SubjectExamNumberSerializer(serializers.ModelSerializer):
+    exam_tags = ExamTagSerializer(
+        many=True, read_only=True)
+
+    class Meta:
+        model = SubjectExamNumber
+        fields = ['pk', 'num', 'title', 'exam_tags']
+
+
+class SubjectExamSerializer(serializers.ModelSerializer):
+    subject = SubjectSerializer()
+    exam = ExamSerializer()
+    subject_exam_numbers = SubjectExamNumberSerializer(
+        many=True, read_only=True)
+
+    class Meta:
+        model = SubjectExam
+        fields = ['pk', 'subject', 'exam', 'subject_exam_numbers']
+
+
+class ExamTreeSerializer(serializers.ModelSerializer):
+    subject_exams = SubjectExamSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Subject
+        fields = ['pk', 'title', 'subject_exams']

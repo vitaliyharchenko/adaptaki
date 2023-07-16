@@ -19,7 +19,8 @@ class Exam(models.Model):
 
 class SubjectExam(models.Model):
     exam = models.ForeignKey('trainer.Exam', on_delete=models.CASCADE)
-    subject = models.ForeignKey('graph.Subject', on_delete=models.CASCADE)
+    subject = models.ForeignKey(
+        'graph.Subject', on_delete=models.CASCADE, related_name='subject_exams')
 
     class Meta:
         verbose_name = 'экзамен по предмету'
@@ -31,7 +32,7 @@ class SubjectExam(models.Model):
 
 class SubjectExamNumber(models.Model):
     subject_exam = models.ForeignKey(
-        'trainer.SubjectExam', on_delete=models.CASCADE)
+        'trainer.SubjectExam', on_delete=models.CASCADE, related_name='subject_exam_numbers')
     num = models.SmallIntegerField(verbose_name='Номер задания')
     title = models.CharField(max_length=200, blank=True, null=True)
 
@@ -69,7 +70,7 @@ class ExamTag(models.Model):
         verbose_name='Тема задачи',
         max_length=300)
     subject_exam_number = models.ForeignKey(
-        'trainer.subjectexamnumber', null=True, on_delete=models.CASCADE)
+        'trainer.subjectexamnumber', null=True, on_delete=models.CASCADE, related_name='exam_tags')
     is_active = models.BooleanField(
         default=True,
         verbose_name="Тег отображается?"
