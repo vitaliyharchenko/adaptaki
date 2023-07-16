@@ -5,7 +5,7 @@ from markdownx.widgets import AdminMarkdownxWidget
 from .models import Question, QuestionOption
 
 
-class QuestionOptionInline(admin.StackedInline):
+class QuestionOptionInline(admin.TabularInline):
     model = QuestionOption
     fk_name = "question"
     extra = 0
@@ -30,3 +30,12 @@ class QuestionAdmin(admin.ModelAdmin):
     inlines = [QuestionOptionInline]
     form = QuestionAdminForm
     list_filter = ["exam_tag"]
+    fieldsets = [
+        ("Тип задачи", {"fields": [
+            "type", "max_score", "checking_policy"]}),
+        ("Условие задачи", {"fields": ["question_text", "image"]}),
+        ("Пояснение", {"fields": [
+            "explanation_text", "explanation_image"]}),
+        ("Привязка", {"fields": [
+            "nodes", "exam_tag"], "classes": ["collapse"]}),
+    ]

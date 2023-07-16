@@ -76,8 +76,8 @@ class ExamTag(models.Model):
     )
 
     class Meta:
-        verbose_name = 'тема задачи'
-        verbose_name_plural = 'темы задач'
+        verbose_name = 'тема задачи (NEW)'
+        verbose_name_plural = 'темы задач (NEW)'
 
     def __str__(self):
         return f"{self.subject_exam_number} {self.title} {self.is_active}"

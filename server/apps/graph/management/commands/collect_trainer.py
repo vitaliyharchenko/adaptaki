@@ -14,17 +14,9 @@ class Command(BaseCommand):
             tags = q.trainer_tags.all()
             if len(tags) > 0:
                 print(q, tags[0])
-                for tag in tags:
-                    se = SubjectExam.objects.get(
-                        exam=tag.exam, subject=tag.subject)
-                    sen = SubjectExamNumber.objects.get(
-                        subject_exam=se, num=tag.num)
-                    theme = tag.theme
-
-                    print(q, theme)
-
-                    theme.subject_exam_number = sen
-                    theme.save()
+                tag = tags[0]
+                q.exam_tag = tag.theme
+                q.save()
 
         # subject_exams = SubjectExam.objects.all()
 
