@@ -17,16 +17,25 @@ CLASSES = (
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    phone = models.CharField(max_length=30, unique=True, verbose_name="Телефон")
-    first_name = models.CharField(max_length=30, blank=True, verbose_name="Имя")
-    last_name = models.CharField(max_length=30, blank=True, verbose_name="Фамилия")
-    date_joined = models.DateTimeField(auto_now_add=True, verbose_name="Дата регистрации")
-    is_active = models.BooleanField(default=True, verbose_name="Профиль активен?")
-    is_staff = models.BooleanField(default=False, verbose_name="Права администратора")
-    class_of = models.CharField(max_length=10, choices = CLASSES, blank=True)
+    phone = models.CharField(
+        max_length=30, unique=True, verbose_name="Телефон")
+    first_name = models.CharField(
+        max_length=30, blank=True, verbose_name="Имя")
+    last_name = models.CharField(
+        max_length=30, blank=True, verbose_name="Фамилия")
+    date_joined = models.DateTimeField(
+        auto_now_add=True, verbose_name="Дата регистрации")
+    is_active = models.BooleanField(
+        default=True, verbose_name="Профиль активен?")
+    is_staff = models.BooleanField(
+        default=False, verbose_name="Права администратора")
+    class_of = models.CharField(
+        max_length=10, choices=CLASSES, blank=True, verbose_name="Класс")
 
-    telegram_id = models.CharField(max_length=15, blank=True, unique=True, null=True, verbose_name="Id в телеграм")
-    telegram_username = models.CharField(max_length=50, blank=True, unique=True, null=True, verbose_name="Username в Telegram")
+    telegram_id = models.CharField(
+        max_length=15, blank=True, unique=True, null=True, verbose_name="Id в телеграм")
+    telegram_username = models.CharField(
+        max_length=50, blank=True, unique=True, null=True, verbose_name="Username в Telegram")
 
     objects = UserManager()
 

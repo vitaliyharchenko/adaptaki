@@ -9,16 +9,20 @@ class Result(models.Model):
     question = models.ForeignKey(
         'questions.Question',
         related_name='results',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        verbose_name='Задание'
     )
     user = models.ForeignKey(
         'users.User',
         verbose_name='пользователь',
         on_delete=models.CASCADE
     )
-    date = models.DateTimeField(default=timezone.now)
-    score = models.IntegerField(default=0)
-    max_score = models.IntegerField(default=0)
+    date = models.DateTimeField(default=timezone.now,
+                                verbose_name='Дата ответа')
+    score = models.IntegerField(default=0,
+                                verbose_name='Количество баллов')
+    max_score = models.IntegerField(default=0,
+                                    verbose_name='Максимум баллов')
 
     class Meta:
         verbose_name = 'результат ученика'
