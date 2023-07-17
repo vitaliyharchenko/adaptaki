@@ -12,3 +12,8 @@ https://github.com/python-telegram-bot/python-telegram-bot/wiki/Architecture
 -   [x] Подготовлен архив файлов со старого сервера
 -   [x] Запущен API для получения заданий по id
 -   [x] Запущен API для получения экзаменационного дерева
+
+# todo
+
+-   [] Закрыть ответами все задания на выбор с нулем верных
+-   [] Добавить поддержку математики в markdownx поля в админке `python manage.py find_zero_answers questions`

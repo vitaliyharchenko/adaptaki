@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from apps.trainer.models import SubjectExam, TrainerTag, SubjectExamNumber
-from apps.questions.models import Question
+from apps.questions.models import Question, QuestionOption
 
 
 # Название класса обязательно - "Command"
@@ -9,30 +9,31 @@ class Command(BaseCommand):
     help = 'Implemented to Django application telegram bot setup command'
 
     def handle(self, *args, **kwargs):
-        trainer_tags_ids = []
-        exam_tags_ids = []
-        questions_counter_trainer = 0
-        questions_counter_exam = 0
 
         questions = Question.objects.all()
+        one_counter = 0
+        many_counter = 0
+        zero_ids = []
+        many_ids = []
+
         for q in questions:
-            trainer_tags = q.trainer_tags.all()
-            if len(trainer_tags) > 0:
-                tag = trainer_tags[0]
-                questions_counter_trainer += 1
-                if tag.pk not in trainer_tags_ids:
-                    trainer_tags_ids.append(tag.pk)
+            if q.type == 5:
+                options = QuestionOption.objects.filter(question=q)
+                true_counter = 0
+                for opt in options:
+                    if opt.is_true:
+                        true_counter = 1
+                if true_counter == 0:
+                    zero_ids.append(q.pk)
+                elif true_counter == 1:
+                    one_counter += 1
+                else:
+                    many_counter += 1
+                    many_ids.append(q.pk)
 
-            if q.exam_tag:
-                tag = q.exam_tag
-                questions_counter_exam += 1
-                if tag.pk not in exam_tags_ids:
-                    exam_tags_ids.append(tag.pk)
-
-        print(
-            f"Exam. Tags: {len(exam_tags_ids)}, Questions: {questions_counter_exam}")
-        print(
-            f"Trainer. Tags: {len(trainer_tags_ids)}, Questions: {questions_counter_trainer}")
+        print(f"One: {one_counter}, Many: {many_counter}")
+        print(many_ids)
+        print(zero_ids)
 
         # subject_exams = SubjectExam.objects.all()
 

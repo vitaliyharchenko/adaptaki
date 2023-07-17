@@ -29,7 +29,7 @@ class QuestionAdminForm(ModelForm):
 class QuestionAdmin(admin.ModelAdmin):
     inlines = [QuestionOptionInline]
     form = QuestionAdminForm
-    list_filter = ["exam_tag", "type"]
+    list_filter = ["type"]
     fieldsets = [
         ("Тип задачи", {"fields": [
             "type", "max_score", "checking_policy"]}),
