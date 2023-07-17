@@ -9,14 +9,30 @@ class Command(BaseCommand):
     help = 'Implemented to Django application telegram bot setup command'
 
     def handle(self, *args, **kwargs):
+        trainer_tags_ids = []
+        exam_tags_ids = []
+        questions_counter_trainer = 0
+        questions_counter_exam = 0
+
         questions = Question.objects.all()
         for q in questions:
-            tags = q.trainer_tags.all()
-            if len(tags) > 0:
-                print(q, tags[0])
-                tag = tags[0]
-                q.exam_tag = tag.theme
-                q.save()
+            trainer_tags = q.trainer_tags.all()
+            if len(trainer_tags) > 0:
+                tag = trainer_tags[0]
+                questions_counter_trainer += 1
+                if tag.pk not in trainer_tags_ids:
+                    trainer_tags_ids.append(tag.pk)
+
+            if q.exam_tag:
+                tag = q.exam_tag
+                questions_counter_exam += 1
+                if tag.pk not in exam_tags_ids:
+                    exam_tags_ids.append(tag.pk)
+
+        print(
+            f"Exam. Tags: {len(exam_tags_ids)}, Questions: {questions_counter_exam}")
+        print(
+            f"Trainer. Tags: {len(trainer_tags_ids)}, Questions: {questions_counter_trainer}")
 
         # subject_exams = SubjectExam.objects.all()
 

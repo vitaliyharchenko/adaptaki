@@ -15,7 +15,7 @@ class ExamTagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ExamTag
-        fields = ['pk', 'title', 'is_active']
+        fields = ['pk', 'title', 'is_active', 'questions_exist']
 
 
 class SubjectExamNumberSerializer(serializers.ModelSerializer):
@@ -24,7 +24,7 @@ class SubjectExamNumberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubjectExamNumber
-        fields = ['pk', 'num', 'title', 'exam_tags']
+        fields = ['pk', 'num', 'title', 'questions_exist', 'exam_tags']
 
 
 class SubjectExamSerializer(serializers.ModelSerializer):
@@ -35,7 +35,8 @@ class SubjectExamSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SubjectExam
-        fields = ['pk', 'subject', 'exam', 'subject_exam_numbers']
+        fields = ['pk', 'subject', 'exam',
+                  'questions_exist', 'subject_exam_numbers']
 
 
 class ExamTreeSerializer(serializers.ModelSerializer):
