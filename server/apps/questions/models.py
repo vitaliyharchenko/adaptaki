@@ -77,8 +77,6 @@ class Question(models.Model):
         'graph.Node', blank=True, verbose_name="Вершины графа")
 
     # For exam tree
-    trainer_tags = models.ManyToManyField(
-        'trainer.TrainerTag', blank=True, verbose_name="Экзаменационный тег (old)")
     exam_tag = models.ForeignKey(
         'trainer.ExamTag', blank=True, null=True, verbose_name="Тег экзамена (new)", on_delete=models.SET_NULL, related_name='questions')
 

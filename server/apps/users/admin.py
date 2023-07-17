@@ -2,6 +2,7 @@ from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 
 from .models import User
@@ -47,7 +48,8 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ["phone", "password", "first_name", "last_name", "is_active", "is_staff"]
+        fields = ["phone", "password", "first_name",
+                  "last_name", "is_active", "is_staff"]
 
 
 # Register your models here.
@@ -59,12 +61,14 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ["phone", "first_name", "last_name", "telegram_username", "date_joined", "class_of", "is_staff"]
+    list_display = ["phone", "first_name", "last_name",
+                    "telegram_username", "date_joined", "class_of", "is_staff"]
     list_filter = ["is_staff"]
-    readonly_fields=['date_joined']
+    readonly_fields = ['date_joined']
     fieldsets = [
         (None, {"fields": ["phone", "password"]}),
-        ("Персональная информация", {"fields": ["first_name", "last_name", "class_of"]}),
+        ("Персональная информация", {"fields": [
+         "first_name", "last_name", "class_of"]}),
         ("Доступы", {"fields": ["is_staff"]}),
         ("Телеграм", {"fields": ["telegram_id", "telegram_username"]}),
         ("Дополнительно", {"fields": ["date_joined"]}),
@@ -87,3 +91,4 @@ class UserAdmin(BaseUserAdmin):
 
 # Now register the new UserAdmin...
 admin.site.register(User, UserAdmin)
+admin.site.unregister(Group)
