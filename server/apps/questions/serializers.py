@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from apps.graph.serializers import NodeSerializer
-from .models import Question, POLICY_CHOICES, TYPE_CHOICES
+from .models import Question, POLICY_CHOICES, TYPE_CHOICES, QuestionOption
 
 
 class PolicyField(serializers.BaseSerializer):
@@ -10,6 +10,13 @@ class PolicyField(serializers.BaseSerializer):
             if t[0] == instance:
                 return t[1]
         return instance
+
+
+class OptionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = QuestionOption
+        fields = ['pk', 'is_true', 'option_text', 'option_image']
 
 
 class TypeField(serializers.BaseSerializer):
@@ -23,10 +30,11 @@ class TypeField(serializers.BaseSerializer):
 
 class QuestionSerializer(serializers.ModelSerializer):
     nodes = NodeSerializer(many=True, read_only=True)
+    all_options = OptionSerializer(many=True)
     checking_policy = PolicyField()
     type = TypeField()
 
     class Meta:
         model = Question
         fields = ['pk', 'question_text', 'image', 'explanation_image',
-                  'max_score', 'type', 'checking_policy', 'nodes', 'trainer_tags']
+                  'max_score', 'type', 'checking_policy', 'all_options', 'nodes', 'trainer_tags']

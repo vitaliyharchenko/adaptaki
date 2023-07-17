@@ -89,8 +89,9 @@ class Question(models.Model):
     def __str__(self):
         return f'#{self.pk}. {self.question_text[:30]}...'
 
-    def check_answer(self, answer):
-        return 0
+    def all_options(self):
+        opts = QuestionOption.objects.filter(question=self)
+        return opts
 
 
 def option_image_directory_path(instance, filename):

@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 
     # My apps
     'apps.graph',
+    'apps.results',
     'apps.questions',
     'apps.trainer',
     'apps.users',
