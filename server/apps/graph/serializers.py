@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Node, Subject, Concept, TYPE_CHOICES
+from .models import Node, Subject, Concept, TYPE_CHOICES, NodeRelation
 
 
 class TypeField(serializers.BaseSerializer):
@@ -32,4 +32,12 @@ class NodeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Node
-        fields = ['pk', 'title', 'type', 'subject', 'concept']
+        fields = ['pk', 'title', 'type', 'subject',
+                  'concept', 'testability', 'questions_exist']
+
+
+class NodeRelationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = NodeRelation
+        fields = ['pk', 'parent', 'child']

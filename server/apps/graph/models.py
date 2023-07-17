@@ -1,4 +1,5 @@
 from django.db import models
+from apps.questions.models import Question
 
 
 class Subject(models.Model):
@@ -99,6 +100,13 @@ class Node(models.Model):
 
     def __str__(self):
         return str(self.title)
+
+    def questions_exist(self):
+        if self.testability:
+            questions = self.question_set.all()
+            return len(questions)
+        else:
+            return 0
 
 
 class NodeRelation(models.Model):
