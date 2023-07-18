@@ -160,3 +160,14 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ]
 }
+
+
+# MarkdownX
+# https://neutronx.github.io/django-markdownx/customization/#markdownx_markdown_extensions
+# https://github.com/Python-Markdown/markdown/wiki/Third-Party-Extensions
+# https://github.com/mitya57/python-markdown-math
+
+MARKDOWNX_MARKDOWN_EXTENSIONS = [
+    'markdown.extensions.extra',
+    'mdx_math'
+]
