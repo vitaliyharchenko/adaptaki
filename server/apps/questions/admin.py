@@ -39,3 +39,7 @@ class QuestionAdmin(admin.ModelAdmin):
         ("Привязка", {"fields": [
             "nodes", "exam_tag"], "classes": ["collapse"]}),
     ]
+    class Media:
+        js = (
+            '//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js', # mathjax
+        )
