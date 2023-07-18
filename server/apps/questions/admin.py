@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.db import models
 from django.forms import ModelForm
 from markdownx.widgets import AdminMarkdownxWidget
+from markdownx.admin import MarkdownxModelAdmin
 from .models import Question, QuestionOption
 
 
@@ -20,13 +21,13 @@ class QuestionAdminForm(ModelForm):
         model = Question
         fields = "__all__"
         widgets = {
-            "question_text": Textarea(),
-            "explanation_text": Textarea(),
+            "question_text": Textarea(attrs={"cols": 10, "rows": 10, "style": 'width: 95%'}),
+            "explanation_text": Textarea(attrs={"cols": 10, "rows": 10}),
         }
 
 
 @admin.register(Question)
-class QuestionAdmin(admin.ModelAdmin):
+class QuestionAdmin(MarkdownxModelAdmin):
     inlines = [QuestionOptionInline]
     form = QuestionAdminForm
     list_filter = ["type"]
@@ -39,7 +40,9 @@ class QuestionAdmin(admin.ModelAdmin):
         ("Привязка", {"fields": [
             "nodes", "exam_tag"], "classes": ["collapse"]}),
     ]
+
     class Media:
         js = (
-            '//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js', # mathjax
+            '//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js',  # mathjax
+            'mathjax.js'
         )
