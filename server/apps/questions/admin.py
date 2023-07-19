@@ -39,6 +39,7 @@ class QuestionAdmin(MarkdownxModelAdmin):
     form = QuestionAdminForm
     list_filter = ["type", "max_score"]
     autocomplete_fields = ["exam_tag", "nodes"]
+    search_fields = ["pk", "question_text"]
     fieldsets = [
         ("Тип задачи", {"fields": [
             "type", "max_score", "checking_policy"]}),
