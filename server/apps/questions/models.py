@@ -111,7 +111,6 @@ class Question(models.Model):
                             return self.max_score
                     return 0
             case QuestionType.FLOAT:
-                print('check_float_answer', answer)
                 if answer is None or not str(answer):
                     return 0
                 
