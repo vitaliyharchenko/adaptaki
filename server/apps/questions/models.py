@@ -133,8 +133,8 @@ class QuestionOption(models.Model):
     )
 
     class Meta:
-        verbose_name = 'вариант ответа на задание'
-        verbose_name_plural = 'варианты ответа на задания'
+        verbose_name = 'вариант ответа'
+        verbose_name_plural = 'варианты ответа'
 
     def __str__(self):
-        return self.option_text
+        return f"{self.pk} {self.option_text[:30]}"
