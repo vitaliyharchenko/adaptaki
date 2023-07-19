@@ -99,7 +99,7 @@ class Node(models.Model):
         verbose_name_plural = 'вершины графа'
 
     def __str__(self):
-        return str(self.title)
+        return f"{self.title} ({self.subject})"
 
     def questions_exist(self):
         if self.testability:

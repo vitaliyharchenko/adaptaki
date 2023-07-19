@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.db import models
+from dal import autocomplete
 from django.forms import ModelForm
 from markdownx.widgets import AdminMarkdownxWidget
 from markdownx.admin import MarkdownxModelAdmin
@@ -31,6 +31,7 @@ class QuestionAdminForm(ModelForm):
         widgets = {
             "question_text": BigMarkdownTextArea(attrs={"cols": 10, "rows": 6, "style": 'width: 95%'}),
             "explanation_text": BigMarkdownTextArea(attrs={"cols": 10, "rows": 4, "style": 'width: 95%'}),
+            "nodes": autocomplete.ModelSelect2Multiple(url='node-autocomplete')
         }
 
 
