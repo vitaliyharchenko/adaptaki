@@ -44,3 +44,10 @@ class QuestionSerializer(serializers.ModelSerializer):
         model = Question
         fields = ['pk', 'question_text', 'image', 'explanation_image',
                   'max_score', 'type', 'checking_policy', 'all_options', 'nodes', 'exam_tag']
+
+
+class QuestionSerializerWithAnswer(QuestionSerializer):
+    class Meta:
+        model = Question
+        fields = ['pk', 'question_text', 'image', 'explanation_image',
+                  'max_score', 'type', 'checking_policy', 'all_options', 'nodes', 'exam_tag', 'all_options']
