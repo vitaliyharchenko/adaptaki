@@ -15,8 +15,3 @@ class ConceptAdmin(admin.ModelAdmin):
 @admin.register(Node)
 class NodeAdmin(admin.ModelAdmin):
     pass
-
-
-@admin.register(NodeRelation)
-class NodeRelationAdmin(admin.ModelAdmin):
-    pass
