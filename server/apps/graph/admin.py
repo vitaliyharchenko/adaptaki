@@ -14,4 +14,4 @@ class ConceptAdmin(admin.ModelAdmin):
 
 @admin.register(Node)
 class NodeAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ["title"]

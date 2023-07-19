@@ -36,18 +36,19 @@ class QuestionAnswerSerializer(serializers.Serializer):
 
 class QuestionSerializer(serializers.ModelSerializer):
     nodes = NodeSerializer(many=True, read_only=True)
-    all_options = OptionSerializer(many=True)
     checking_policy = PolicyField()
     type = TypeField()
 
     class Meta:
         model = Question
         fields = ['pk', 'question_text', 'image', 'explanation_image',
-                  'max_score', 'type', 'checking_policy', 'all_options', 'nodes', 'exam_tag']
+                  'max_score', 'type', 'checking_policy', 'nodes', 'exam_tag']
 
 
 class QuestionSerializerWithAnswer(QuestionSerializer):
+    all_options = OptionSerializer(many=True)
+    
     class Meta:
         model = Question
         fields = ['pk', 'question_text', 'image', 'explanation_image',
-                  'max_score', 'type', 'checking_policy', 'all_options', 'nodes', 'exam_tag', 'all_options']
+                  'max_score', 'type', 'checking_policy', 'all_options', 'nodes', 'exam_tag']

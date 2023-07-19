@@ -20,3 +20,4 @@ class SubjectExamNumberAdmin(admin.ModelAdmin):
 @admin.register(ExamTag)
 class ExamTagAdmin(admin.ModelAdmin):
     list_filter = ["subject_exam_number", "is_active"]
+    search_fields = ["title"]

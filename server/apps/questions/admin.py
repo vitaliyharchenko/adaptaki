@@ -1,5 +1,4 @@
 from django.contrib import admin
-from dal import autocomplete
 from django.forms import ModelForm
 from markdownx.widgets import AdminMarkdownxWidget
 from markdownx.admin import MarkdownxModelAdmin
@@ -31,8 +30,6 @@ class QuestionAdminForm(ModelForm):
         widgets = {
             "question_text": BigMarkdownTextArea(attrs={"cols": 10, "rows": 6, "style": 'width: 95%'}),
             "explanation_text": BigMarkdownTextArea(attrs={"cols": 10, "rows": 4, "style": 'width: 95%'}),
-            "nodes": autocomplete.ModelSelect2Multiple(url='node-autocomplete'),
-            "exam_tag": autocomplete.ModelSelect2(url='exam_tag-autocomplete')
         }
 
 
@@ -41,6 +38,7 @@ class QuestionAdmin(MarkdownxModelAdmin):
     inlines = [QuestionOptionInline]
     form = QuestionAdminForm
     list_filter = ["type", "max_score"]
+    autocomplete_fields = ["exam_tag", "nodes"]
     fieldsets = [
         ("Тип задачи", {"fields": [
             "type", "max_score", "checking_policy"]}),
