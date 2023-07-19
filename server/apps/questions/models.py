@@ -18,7 +18,7 @@ POLICY_CHOICES = [
 
 # типы заданий
 class QuestionType:
-    SIMPLE = 1
+    STRING = 1
     FLOAT = 7
     ORDERED_SYMBOLS = 2
     UNORDERED_SYMBOLS = 3
@@ -27,7 +27,7 @@ class QuestionType:
     COMPOSITE = 6
 
 TYPE_CHOICES = [
-    (QuestionType.SIMPLE, 'Обычная проверка строки'),
+    (QuestionType.STRING, 'Обычная проверка строки'),
     (QuestionType.FLOAT, 'Проверка числа'),
     (QuestionType.ORDERED_SYMBOLS, 'Набор символов в строгом порядке'),
     (QuestionType.UNORDERED_SYMBOLS, 'Набор символов в случайном порядке'),
@@ -94,34 +94,102 @@ class Question(models.Model):
     def all_options(self):
         opts = QuestionOption.objects.filter(question=self)
         return opts
+    
+    def true_options(self):
+        options = QuestionOption.objects.filter(question=self, is_true=True)
+        return options
+
 
     def check_answer(self, answer):
         match self.type:
-            case QuestionType.SIMPLE:
+            case QuestionType.STRING:
                 if isinstance(answer, str):
                     answer = answer.strip()
                     opts = self.all_options()
                     for opt in opts:
                         if opt.option_text.casefold() == answer.casefold():
-                            return 1
+                            return self.max_score
                     return 0
-                    print('check_simple_answer', answer)
+            case QuestionType.FLOAT:
+                print('check_float_answer', answer)
+                if answer is None or not str(answer):
+                    return 0
+                
+                answer = answer.strip()
+                opts = self.all_options()
+                for opt in opts:
+                    if float(opt.option_text) == float(answer):
+                        return self.max_score
+                return 0
             case QuestionType.ORDERED_SYMBOLS:
-                if isinstance(answer, str):
-                    answer = answer.strip()
-                    print('check_ordered_answer', answer)
+                right_answers = [int(x) for x in self.all_options()[0].option_text.strip()]
+                answers = [int(x) for x in answer.strip()]
+
+                excess_count = max(0, len(right_answers) - len(answers))
+
+                mismatch = [ans[0] == ans[1] for ans in zip(right_answers, answers)]
+                mismatch_count = mismatch.count(False)
+
+                if self.checking_policy == PolicyType.ONE_WRONG_MINUS_ONE:
+                    return max(0, self.max_score - mismatch_count - excess_count)
+                elif self.checking_policy == PolicyType.ONE_WRONG_MINUS_ALL:
+                    if mismatch_count == 0:
+                        return self.max_score
+                    return 0
+                return 0
             case QuestionType.UNORDERED_SYMBOLS:
-                if isinstance(answer, str):
-                    answer = answer.strip()
-                    print('check_unordered_answer', answer)
+                right_answers = [int(x) for x in self.all_options()[0].option_text.strip()]
+                answers = [int(x) for x in answer.strip()]
+
+                excess_count = max(0, len(right_answers) - len(answers))
+                
+                mismatch = [ans in right_answers for ans in answers]
+                mismatch_count = mismatch.count(False)
+
+                if self.checking_policy == PolicyType.ONE_WRONG_MINUS_ONE:
+                    return max(0, self.max_score - mismatch_count - excess_count)
+                elif self.checking_policy == PolicyType.ONE_WRONG_MINUS_ALL:
+                    if mismatch_count == 0:
+                        return self.max_score
+                    return 0
+                return 0
             case QuestionType.ONE_CHOICE:
-                if isinstance(answer, str):
-                    answer = answer.strip()
-                    print('check_one_choice_answer', answer)
+                answer = int(answer)
+
+                true_options = self.true_options()
+                for option in true_options:
+                    if option.pk == answer:
+                        return self.max_score
+                return 0
             case QuestionType.MANY_CHOICE:
-                if isinstance(answer, str):
-                    answer = answer.strip()
-                    print('check_many_choice_answer', answer)
+                user_options = answer.split(',')
+                user_options = [int(x) for x in user_options]
+
+                all_options = self.all_options()
+
+                true_count = 0
+                false_count = 0
+                miss_count = 0
+                for opt in all_options:
+                    if opt.is_true:
+                        if opt.pk in user_options:
+                            true_count += 1
+                        else:
+                            miss_count += 1
+                    else:
+                        if opt.pk in user_options:
+                            false_count += 1
+                
+                # print(f"True:{true_count}, false:{false_count}, miss:{miss_count}")
+
+                if self.checking_policy == PolicyType.ONE_WRONG_MINUS_ONE:
+                    return max(0, self.max_score - max(false_count, miss_count))
+                elif self.checking_policy == PolicyType.ONE_WRONG_MINUS_ALL:
+                    if false_count == 0 and miss_count == 0:
+                        return self.max_score
+                    return 0
+                
+                return 0
             case QuestionType.COMPOSITE:
                 print('check_composite_answer', answer)
             case _:

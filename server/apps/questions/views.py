@@ -43,7 +43,8 @@ class QuestionAnswerCheck(APIView):
             # Проверка правильности ответа и получение баллов
             answer = request.data["answer"]
             question = Question.objects.get(pk=pk)
-            question.check_answer(answer)
+            score = question.check_answer(answer)
+            print(score)
 
             # сохранение результата с баллами
 

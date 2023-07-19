@@ -31,7 +31,8 @@ class QuestionAdminForm(ModelForm):
         widgets = {
             "question_text": BigMarkdownTextArea(attrs={"cols": 10, "rows": 6, "style": 'width: 95%'}),
             "explanation_text": BigMarkdownTextArea(attrs={"cols": 10, "rows": 4, "style": 'width: 95%'}),
-            "nodes": autocomplete.ModelSelect2Multiple(url='node-autocomplete')
+            "nodes": autocomplete.ModelSelect2Multiple(url='node-autocomplete'),
+            "exam_tag": autocomplete.ModelSelect2(url='exam_tag-autocomplete')
         }
 
 
@@ -39,14 +40,14 @@ class QuestionAdminForm(ModelForm):
 class QuestionAdmin(MarkdownxModelAdmin):
     inlines = [QuestionOptionInline]
     form = QuestionAdminForm
-    list_filter = ["type"]
+    list_filter = ["type", "max_score"]
     fieldsets = [
         ("Тип задачи", {"fields": [
             "type", "max_score", "checking_policy"]}),
         ("Условие задачи", {"fields": ["question_text", "image"]}),
         ("Пояснение", {"fields": [
             "explanation_text", "explanation_image"]}),
-        ("Привязка", {"fields": [
+        ("Привязка к рубрикаторам", {"fields": [
             "nodes", "exam_tag"], "classes": ["collapse"]}),
     ]
 

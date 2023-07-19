@@ -20,7 +20,7 @@ class GraphView(APIView):
         return Response({'nodes': nodes_serializer.data, 'edges': edges_serializer.data})
 
 
-# dkango-autocomplete
+# django-autocomplete
 class NodeAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         # Don't forget to filter out results depending on the visitor !
