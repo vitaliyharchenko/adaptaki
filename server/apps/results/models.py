@@ -1,5 +1,6 @@
 from django.utils import timezone
 from django.db import models
+from model_utils.managers import InheritanceManager
 
 
 class Result(models.Model):
@@ -23,6 +24,10 @@ class Result(models.Model):
                                 verbose_name='Количество баллов')
     max_score = models.IntegerField(default=0,
                                     verbose_name='Максимум баллов')
+    
+    # Ingeritance manager 
+    # https://django-model-utils.readthedocs.io/en/latest/managers.html#inheritancemanager
+    objects = InheritanceManager()
 
     class Meta:
         verbose_name = 'результат ученика'
@@ -32,10 +37,6 @@ class Result(models.Model):
         return f'Result #{self.pk} Date: {self.date} Score: {self.score}'
 
     def set_score(self):
-        # self.score = self.question.check_answer(self.answer)
-        # self.save()
-        # self.user_task_relation.score += self.score
-        # self.user_task_relation.save()
         pass
 
 
@@ -51,27 +52,11 @@ class StringResult(Result):
     )
 
     class Meta:
-        verbose_name = 'ответ на вопрос с ответом строкой'
-        verbose_name_plural = 'ответ на вопросы с ответом строкой'
+        verbose_name = 'ответ на вопрос строкой'
+        verbose_name_plural = 'ответ на вопросы строкой'
 
     def __str__(self):
-        return f'Result #{self.pk} Date: {self.date} Score: {self.score} Answer:{self.answer[:30]}'
-
-
-class ChoiceResult(Result):
-    """
-        Model for result with many answer options
-    """
-    answer = models.JSONField(
-        verbose_name='Ответ ученика'
-    )
-
-    class Meta:
-        verbose_name = 'ответ на вопрос с ответом выбором'
-        verbose_name_plural = 'ответы на вопрос с ответом выбором'
-
-    def __str__(self):
-        return f'Result #{self.pk} Date: {self.date} Score: {self.score} Answer:{self.answer}'
+        return f'#{self.pk} Дата: {self.date} Балл: {self.score}/{self.max_score} Ответ:{self.answer[:30]} Пользователь: {self.user}'
 
 
 # TODO: ответ ученика файлом

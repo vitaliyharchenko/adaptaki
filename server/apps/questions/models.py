@@ -7,29 +7,33 @@ def get_question_image_directory_path(instance, filename):
 
 
 # политики проверки
-ONE_WRONG_MINUS_ONE = 1
-ONE_WRONG_MINUS_ALL = 2
+class PolicyType:
+    ONE_WRONG_MINUS_ONE = 1
+    ONE_WRONG_MINUS_ALL = 2
 
 POLICY_CHOICES = [
-    (ONE_WRONG_MINUS_ONE, 'Один неверный ответ, минус один балл.'),
-    (ONE_WRONG_MINUS_ALL, 'Один неверный ответ, минус все баллы.'),
+    (PolicyType.ONE_WRONG_MINUS_ONE, 'Один неверный ответ, минус один балл.'),
+    (PolicyType.ONE_WRONG_MINUS_ALL, 'Один неверный ответ, минус все баллы.'),
 ]
 
 # типы заданий
-SIMPLE = 1
-ORDERED_SYMBOLS = 2
-UNORDERED_SYMBOLS = 3
-ONE_CHOICE = 4
-MANY_CHOICE = 5
-COMPOSITE = 6
+class QuestionType:
+    SIMPLE = 1
+    FLOAT = 7
+    ORDERED_SYMBOLS = 2
+    UNORDERED_SYMBOLS = 3
+    ONE_CHOICE = 4
+    MANY_CHOICE = 5
+    COMPOSITE = 6
 
 TYPE_CHOICES = [
-    (SIMPLE, 'Обычная проверка строки'),
-    (ORDERED_SYMBOLS, 'Набор символов в строгом порядке'),
-    (UNORDERED_SYMBOLS, 'Набор символов в случайном порядке'),
-    (ONE_CHOICE, 'Выбор одного верного ответа (с кнопками)'),
-    (MANY_CHOICE, 'Выбор нескольких вариантов ответа (с кнопками)'),
-    (COMPOSITE, 'Развернутый ответ текстом или картинкой'),
+    (QuestionType.SIMPLE, 'Обычная проверка строки'),
+    (QuestionType.FLOAT, 'Проверка числа'),
+    (QuestionType.ORDERED_SYMBOLS, 'Набор символов в строгом порядке'),
+    (QuestionType.UNORDERED_SYMBOLS, 'Набор символов в случайном порядке'),
+    (QuestionType.ONE_CHOICE, 'Выбор одного верного ответа (с кнопками)'),
+    (QuestionType.MANY_CHOICE, 'Выбор нескольких вариантов ответа (с кнопками)'),
+    (QuestionType.COMPOSITE, 'Развернутый ответ текстом или картинкой'),
 ]
 
 
@@ -63,7 +67,7 @@ class Question(models.Model):
     checking_policy = models.SmallIntegerField(
         verbose_name='Политика проверки заданий',
         choices=POLICY_CHOICES,
-        default=ONE_WRONG_MINUS_ONE,
+        default=PolicyType.ONE_WRONG_MINUS_ONE,
     )
 
     type = models.SmallIntegerField(
@@ -90,6 +94,38 @@ class Question(models.Model):
     def all_options(self):
         opts = QuestionOption.objects.filter(question=self)
         return opts
+
+    def check_answer(self, answer):
+        match self.type:
+            case QuestionType.SIMPLE:
+                if isinstance(answer, str):
+                    answer = answer.strip()
+                    opts = self.all_options()
+                    for opt in opts:
+                        if opt.option_text.casefold() == answer.casefold():
+                            return 1
+                    return 0
+                    print('check_simple_answer', answer)
+            case QuestionType.ORDERED_SYMBOLS:
+                if isinstance(answer, str):
+                    answer = answer.strip()
+                    print('check_ordered_answer', answer)
+            case QuestionType.UNORDERED_SYMBOLS:
+                if isinstance(answer, str):
+                    answer = answer.strip()
+                    print('check_unordered_answer', answer)
+            case QuestionType.ONE_CHOICE:
+                if isinstance(answer, str):
+                    answer = answer.strip()
+                    print('check_one_choice_answer', answer)
+            case QuestionType.MANY_CHOICE:
+                if isinstance(answer, str):
+                    answer = answer.strip()
+                    print('check_many_choice_answer', answer)
+            case QuestionType.COMPOSITE:
+                print('check_composite_answer', answer)
+            case _:
+                pass
 
 
 def option_image_directory_path(instance, filename):

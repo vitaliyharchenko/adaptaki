@@ -16,6 +16,7 @@ https://github.com/python-telegram-bot/python-telegram-bot/wiki/Architecture
 
 # todo
 
+-   [] Научиться проверять ответ и выставлять баллы
 -   [] Научиться сохранять ответ на choicequestion тоже строкой
 -   [] Добавить в админку django-autocomplete для сложных полей (концепт, тег экзамена, sen)
 -   [] Разобраться с тегами экзамена без привязки экзамена и номера
