@@ -1,7 +1,7 @@
 import logging
 from asgiref.sync import sync_to_async
 from django.core.management.base import BaseCommand
-from users.models import User
+from apps.users.models import User
 from .features.auth import get_user, check_subscription
 from .features.reg import reg_handler
 
