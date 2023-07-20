@@ -1,15 +1,5 @@
 from django.contrib import admin
-from .models import Exam, SubjectExam, SubjectExamNumber, ExamTag
-
-
-@admin.register(Exam)
-class ExamAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(SubjectExam)
-class SubjectExamAdmin(admin.ModelAdmin):
-    pass
+from .models import SubjectExamNumber, ExamTag
 
 
 @admin.register(SubjectExamNumber)

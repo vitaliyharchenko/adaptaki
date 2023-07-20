@@ -1,10 +1,5 @@
 from django.contrib import admin
-from .models import Subject, Concept, Node, NodeRelation
-
-
-@admin.register(Subject)
-class SubjectAdmin(admin.ModelAdmin):
-    pass
+from .models import Concept, Node
 
 
 @admin.register(Concept)
@@ -16,3 +11,4 @@ class ConceptAdmin(admin.ModelAdmin):
 @admin.register(Node)
 class NodeAdmin(admin.ModelAdmin):
     search_fields = ["title", "concept__title"]
+    list_filter = ["subject", "type"]
