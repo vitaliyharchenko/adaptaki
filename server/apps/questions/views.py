@@ -50,10 +50,11 @@ class QuestionDetail(APIView):
         if serializer.is_valid():
             # Проверка правильности ответа и получение баллов
             answer = request.data["answer"]
-            question = Question.objects.get(pk=pk)
-            score = question.check_answer(answer)
 
-            # сохранение результата с баллами
+            # TODO: распознать пользователя по запросу
+            user = request.user
+            question = Question.objects.get(pk=pk)
+            score = question.check_answer(answer, user=user)
 
             return Response({'data': request.data, "score": score}, status=status.HTTP_200_OK)
 

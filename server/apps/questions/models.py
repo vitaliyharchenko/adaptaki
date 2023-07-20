@@ -1,5 +1,6 @@
 from django.db import models
 from markdownx.models import MarkdownxField
+from apps.results.models import StringResult
 
 
 def get_question_image_directory_path(instance, filename):
@@ -99,8 +100,12 @@ class Question(models.Model):
         options = QuestionOption.objects.filter(question=self, is_true=True)
         return options
 
+    def check_answer(self, answer, user):
+        score = self.get_score(answer)
+        self.create_result(score=score, answer=answer, user=user)
+        return score
 
-    def check_answer(self, answer):
+    def get_score(self, answer):
         match self.type:
             case QuestionType.STRING:
                 if isinstance(answer, str):
@@ -115,9 +120,15 @@ class Question(models.Model):
                     return 0
                 
                 answer = answer.strip()
+                float_answer = 0
+                try:
+                    float_answer=float(answer)
+                except ValueError:
+                    return 0
+
                 opts = self.all_options()
                 for opt in opts:
-                    if float(opt.option_text) == float(answer):
+                    if float(opt.option_text) == float_answer:
                         return self.max_score
                 return 0
             case QuestionType.ORDERED_SYMBOLS:
@@ -193,6 +204,11 @@ class Question(models.Model):
                 print('check_composite_answer', answer)
             case _:
                 pass
+    
+    def create_result(self, score, answer, user):
+        print(f"Create result {score} {answer} {user}")
+        result = StringResult.objects.create(answer=answer, question=self, user=user, score=score, max_score=self.max_score)
+        print(f"Result created: {result}")
 
 
 def option_image_directory_path(instance, filename):
