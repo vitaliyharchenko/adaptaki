@@ -24,3 +24,22 @@ https://github.com/python-telegram-bot/python-telegram-bot/wiki/Architecture
 -   [] Поднять сервис для обслуживания бота, общающийся с сервероп по api
 -   [] Закрыть ответами все задания на выбор с нулем верных `python manage.py find_zero_answers questions`
 -   [] Закрыть задачами все вершины без них `python manage.py classify_nodes graph`
+-   [] Gjlrk.xbnm yjhvfkmye. ,fpe lfyys[]
+
+# забавно
+
+-   В базе sqlite3 невозможно сделать поиск по полям в админке case insensitive
+
+# составляющие проекта
+
+## сервер
+
+-   Django
+-   sqlite3
+-   rest-framework
+
+## бот
+
+-   Выбор технологии:
+    -   aiogram (асинхронная с русским комьюнити)
+    -   python-telegram-bot (синхронная, ждет ответа пользователя в любом случае)

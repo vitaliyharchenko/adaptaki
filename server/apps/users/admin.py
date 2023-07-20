@@ -84,7 +84,7 @@ class UserAdmin(BaseUserAdmin):
             },
         ),
     ]
-    search_fields = ["phone"]
+    search_fields = ["phone", 'first_name', 'last_name']
     ordering = ["phone", "date_joined"]
     filter_horizontal = []
 
