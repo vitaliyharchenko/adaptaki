@@ -10,9 +10,9 @@ from .serializers import QuestionSerializer, QuestionAnswerSerializer, QuestionS
 class QuestionDetail(APIView):
     """
         get:
-        
+
         Возвращает сериализованный вопрос
-        
+
         Можно указать также параметр answer=True (/&answer=True) для получения списка ответов
 
 
@@ -44,7 +44,7 @@ class QuestionDetail(APIView):
         else:
             serializer = QuestionSerializer(question)
         return Response(serializer.data)
-    
+
     def post(self, request, pk, format=None):
         serializer = QuestionAnswerSerializer(data=request.data)
         if serializer.is_valid():
@@ -68,7 +68,7 @@ class RandomQuestion(APIView):
     Возможна фильтрация по type, nodes, exam_tag
     Можно указать также параметр answer=True (/&answer=True) для получения списка ответов
     """
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def get_object(self, request):
         try:
@@ -79,7 +79,7 @@ class RandomQuestion(APIView):
 
             if type:
                 query = query.filter(type=type)
-            
+
             if exam_tag:
                 query = query.filter(exam_tag_id=exam_tag)
 
@@ -88,7 +88,7 @@ class RandomQuestion(APIView):
             raise Http404
         except IndexError:
             raise Http404
-        
+
     def get(self, request, format=None):
         question = self.get_object(request)
         need_answer = request.GET.get('answer', False)
@@ -98,5 +98,3 @@ class RandomQuestion(APIView):
         else:
             serializer = QuestionSerializer(question)
         return Response(serializer.data)
-        
-

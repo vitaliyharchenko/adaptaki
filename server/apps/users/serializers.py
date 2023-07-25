@@ -18,4 +18,4 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['pk', 'first_name', 'last_name', 'telegram_id',
-                  'telegram_username', 'date_joined', 'class_of']
+                  'telegram_username', 'date_joined', 'class_of', 'is_active', 'is_staff']
