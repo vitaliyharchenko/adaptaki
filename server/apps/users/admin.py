@@ -81,7 +81,7 @@ class UserAdmin(BaseUserAdmin):
         (None, {"fields": ["phone", "password"]}),
         ("Персональная информация", {"fields": [
          "first_name", "last_name", "class_of"]}),
-        ("Доступы", {"fields": ["is_staff"]}),
+        ("Доступы", {"fields": ["is_staff", "is_active"]}),
         ("Телеграм", {"fields": ["telegram_id", "telegram_username"]}),
         ("Дополнительно", {"fields": ["date_joined"]}),
     ]
