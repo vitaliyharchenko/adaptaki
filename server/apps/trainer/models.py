@@ -9,6 +9,7 @@ class Exam(models.Model):
     title = models.CharField(
         verbose_name='Название экзамена',
         max_length=300)
+    is_active = models.BooleanField(verbose_name='Активен?', default=True)
 
     class Meta:
         verbose_name = 'вид экзамена'
@@ -22,6 +23,7 @@ class SubjectExam(models.Model):
     exam = models.ForeignKey('trainer.Exam', on_delete=models.CASCADE, related_name='subject_exams')
     subject = models.ForeignKey(
         'graph.Subject', on_delete=models.CASCADE, related_name='subject_exams')
+    is_active = models.BooleanField(verbose_name='Активен?', default=True)
 
     class Meta:
         verbose_name = 'экзамен по предмету'
@@ -43,10 +45,11 @@ class SubjectExamNumber(models.Model):
         'trainer.SubjectExam', on_delete=models.CASCADE, related_name='subject_exam_numbers')
     num = models.SmallIntegerField(verbose_name='Номер задания')
     title = models.CharField(max_length=200, blank=True, null=True)
+    is_active = models.BooleanField(verbose_name='Активен?', default=True)
 
     class Meta:
-        verbose_name = 'номер в экзамене по предмету'
-        verbose_name_plural = 'номера в экзамене по предметам'
+        verbose_name = 'номер в экзамене'
+        verbose_name_plural = 'номера в экзамене'
 
     def __str__(self):
         return f'{self.subject_exam}, №{self.num} {self.title}'
@@ -74,8 +77,8 @@ class ExamTag(models.Model):
     )
 
     class Meta:
-        verbose_name = 'привязка к кодификатору'
-        verbose_name_plural = 'привязки к кодификатору'
+        verbose_name = 'тема из кодификатора'
+        verbose_name_plural = 'темы из кодификатора'
 
     def __str__(self):
         return f"{self.subject_exam_number} {self.title} {self.is_active}"
