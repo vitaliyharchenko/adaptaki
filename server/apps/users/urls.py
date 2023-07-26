@@ -4,8 +4,6 @@ from . import views
 
 
 urlpatterns = [
-    path('check/telegram/<int:telegram_id>/',
+    path('telegram/',
          views.GetUserByTelegramId.as_view()),
-    path('telegram-token-auth/',
-         views.GetTokenByTelegramId.as_view()),
 ]

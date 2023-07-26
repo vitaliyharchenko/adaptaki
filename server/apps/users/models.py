@@ -57,9 +57,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.first_name
 
-    def get_token(self):
+    def token(self):
         try:
             token = Token.objects.get(user=self)
-            return token
+            return token.key
+        except Token.DoesNotExist:
+            token = Token.objects.create(user=self)
+            return token.key
         except:
             return False
