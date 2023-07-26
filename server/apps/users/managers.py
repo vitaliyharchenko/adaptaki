@@ -1,4 +1,5 @@
 from django.contrib.auth.base_user import BaseUserManager
+from rest_framework.authtoken.models import Token
 
 
 class UserManager(BaseUserManager):
@@ -25,3 +26,6 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
 
         return self._create_user(phone, password, **extra_fields)
+
+    def save(self):
+        token = Token.objects.get_or_create(user=self)
