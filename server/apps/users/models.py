@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
 
+from rest_framework.authtoken.models import Token
+
 from .managers import UserManager
 
 
@@ -54,3 +56,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         return self.first_name
+
+    def get_token(self):
+        try:
+            token = Token.objects.get(user=self)
+            return token
+        except:
+            return False

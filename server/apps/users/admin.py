@@ -5,7 +5,18 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 
+from rest_framework.authtoken.models import TokenProxy, Token
+
 from .models import User
+
+
+# https://www.django-rest-framework.org/api-guide/authentication/#with-django-admin
+# TokenAdmin.raw_id_fields = ['user']
+admin.site.unregister(TokenProxy)
+
+
+class TokenAdmin(admin.StackedInline):
+    model = Token
 
 
 class UserCreationForm(forms.ModelForm):
@@ -65,6 +76,7 @@ class UserAdmin(BaseUserAdmin):
                     "telegram_username", "date_joined", "class_of", "is_staff"]
     list_filter = ["is_staff"]
     readonly_fields = ['date_joined']
+    inlines = [TokenAdmin]
     fieldsets = [
         (None, {"fields": ["phone", "password"]}),
         ("Персональная информация", {"fields": [
