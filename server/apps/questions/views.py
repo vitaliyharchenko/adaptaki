@@ -67,7 +67,7 @@ class RandomQuestion(APIView):
     Возможна фильтрация по type, nodes, exam_tag
     Можно указать также параметр answer=True (/&answer=True) для получения списка ответов
     """
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self, request):
         try:
