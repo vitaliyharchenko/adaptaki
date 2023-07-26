@@ -19,7 +19,7 @@ class Exam(models.Model):
 
 
 class SubjectExam(models.Model):
-    exam = models.ForeignKey('trainer.Exam', on_delete=models.CASCADE)
+    exam = models.ForeignKey('trainer.Exam', on_delete=models.CASCADE, related_name='subject_exams')
     subject = models.ForeignKey(
         'graph.Subject', on_delete=models.CASCADE, related_name='subject_exams')
 

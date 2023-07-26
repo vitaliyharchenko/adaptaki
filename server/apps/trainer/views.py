@@ -4,7 +4,7 @@ from rest_framework import permissions
 from dal import autocomplete
 from apps.graph.models import Subject
 from .serializers import ExamTreeSerializer
-from .models import ExamTag
+from .models import Exam
 
 
 class ExamTree(APIView):
@@ -14,6 +14,6 @@ class ExamTree(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, format=None):
-        subjects = Subject.objects.all()
-        serializer = ExamTreeSerializer(subjects, many=True)
+        exams = Exam.objects.all()
+        serializer = ExamTreeSerializer(exams, many=True)
         return Response(serializer.data)

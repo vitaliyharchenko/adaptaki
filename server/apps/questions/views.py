@@ -38,7 +38,6 @@ class QuestionDetail(APIView):
     def get(self, request, pk, format=None):
         question = self.get_object(pk)
         need_answer = request.GET.get('answer', False)
-        print(f"need answer: {need_answer}")
         if need_answer:
             serializer = QuestionSerializerWithAnswer(question)
         else:

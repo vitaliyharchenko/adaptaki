@@ -161,6 +161,10 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        # авторизация от django для дебага
+        'rest_framework.authentication.SessionAuthentication',
+
+        # авторизация по токену для бота
         'rest_framework.authentication.TokenAuthentication',
     ]
 }

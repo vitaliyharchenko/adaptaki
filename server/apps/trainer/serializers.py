@@ -43,5 +43,5 @@ class ExamTreeSerializer(serializers.ModelSerializer):
     subject_exams = SubjectExamSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Subject
+        model = Exam
         fields = ['pk', 'title', 'subject_exams']

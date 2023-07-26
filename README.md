@@ -29,6 +29,7 @@ https://github.com/python-telegram-bot/python-telegram-bot/wiki/Architecture
 # забавно
 
 -   В базе sqlite3 невозможно сделать поиск по полям в админке case insensitive
+-   Существует API для доступа к РЕшуЕГЭ (https://github.com/anijackich/sdamgia-api)
 
 # составляющие проекта
 
