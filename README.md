@@ -15,6 +15,7 @@ https://github.com/python-telegram-bot/python-telegram-bot/wiki/Architecture
 -   [x] Добавить поддержку математики в markdownx поля в админке
 -   [x] Научиться проверять ответ и выставлять баллы
 -   [x] Добавить в админку django-autocomplete для сложных полей (концепт, тег экзамена, sen)
+-   [x] Закрыть ответами все задания на выбор с нулем верных `python manage.py find_zero_answers questions`
 
 # todo
 
@@ -22,7 +23,6 @@ https://github.com/python-telegram-bot/python-telegram-bot/wiki/Architecture
 -   [] Научиться сохранять ответ на choicequestion тоже строкой
 -   [] Разобраться с тегами экзамена без привязки экзамена и номера
 -   [] Поднять сервис для обслуживания бота, общающийся с сервером по api
--   [] Закрыть ответами все задания на выбор с нулем верных `python manage.py find_zero_answers questions`
 -   [] Закрыть задачами все вершины без них `python manage.py classify_nodes graph`
 -   [] Подключить нормальную базу данных
 
