@@ -36,7 +36,7 @@ class SubjectExamSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubjectExam
         fields = ['pk', 'subject', 'exam',
-                  'questions_exist', 'subject_exam_numbers']
+                  'questions_exist', 'subject_exam_numbers', 'is_active']
 
 
 class ExamTreeSerializer(serializers.ModelSerializer):

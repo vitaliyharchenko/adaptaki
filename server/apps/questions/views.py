@@ -72,15 +72,15 @@ class RandomQuestion(APIView):
     def get_object(self, request):
         try:
             type = self.request.GET.get('type', None)
-            exam_tag = self.request.GET.get('exam_tag', None)
+            exam_tag_id = self.request.GET.get('exam_tag_id', None)
 
             query = Question.objects.all()
 
             if type:
                 query = query.filter(type=type)
 
-            if exam_tag:
-                query = query.filter(exam_tag_id=exam_tag)
+            if exam_tag_id:
+                query = query.filter(exam_tag_id=exam_tag_id)
 
             return query.order_by('?')[0]
         except Question.DoesNotExist:

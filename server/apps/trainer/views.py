@@ -11,7 +11,7 @@ class ExamTree(APIView):
     """
     Дерево экзаменов
     """
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def get(self, request, format=None):
         exams = Exam.objects.all()

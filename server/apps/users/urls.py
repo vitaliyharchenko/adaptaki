@@ -4,7 +4,7 @@ from . import views
 
 
 urlpatterns = [
-    path('telegram/',
+    path('telegram',
          views.GetUserByTelegramId.as_view()),
     path('telegram/reg', views.RegTelegramView.as_view())
 ]
