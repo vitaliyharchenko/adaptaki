@@ -53,6 +53,7 @@ class RegTelegramView(APIView):
         phone = "+" + request.data["phone"]
         class_of = request.data["class_of"]
         telegram_id = request.data["telegram_id"]
+        telegram_username = request.data["telegram_username"]
         secret_code = request.data["secret_code"]
 
         if secret_code != "228":
@@ -60,7 +61,7 @@ class RegTelegramView(APIView):
 
         try:
             user = User.objects.create(phone=phone, first_name=first_name,
-                                       last_name=last_name, class_of=class_of, telegram_id=telegram_id)
+                                       last_name=last_name, class_of=class_of, telegram_id=telegram_id, telegram_username=telegram_username)
             serializer = UserSerializer(user)
             return Response(serializer.data)
         except Exception as e:
