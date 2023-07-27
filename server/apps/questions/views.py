@@ -55,7 +55,7 @@ class QuestionDetail(APIView):
             question = Question.objects.get(pk=pk)
             score = question.check_answer(answer, user=user)
 
-            return Response({'data': request.data, "score": score}, status=status.HTTP_200_OK)
+            return Response({'data': request.data, "score": score, "max_score": question.max_score}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
