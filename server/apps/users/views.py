@@ -37,3 +37,31 @@ class GetUserByTelegramId(APIView):
         user = self.get_object(telegram_id)
         serializer = UserSerializer(user)
         return Response(serializer.data)
+
+
+class RegTelegramView(APIView):
+    """
+    Регистрация пользователя Telegram
+
+    Передаем {first_name, last_name, phone, class_of, telegram_id, telegram_username}
+    """
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, format=None):
+        first_name = request.data["first_name"]
+        last_name = request.data["last_name"]
+        phone = "+" + request.data["phone"]
+        class_of = request.data["class_of"]
+        telegram_id = request.data["telegram_id"]
+        secret_code = request.data["secret_code"]
+
+        if secret_code != "228":
+            return Response({"error": "Bad secret code from telegram bot"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.create(phone=phone, first_name=first_name,
+                                       last_name=last_name, class_of=class_of, telegram_id=telegram_id)
+            serializer = UserSerializer(user)
+            return Response(serializer.data)
+        except Exception as e:
+            return Response({"error": f"Cannot register user: {e}"}, status=status.HTTP_400_BAD_REQUEST)
