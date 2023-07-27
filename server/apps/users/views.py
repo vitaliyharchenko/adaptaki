@@ -65,4 +65,5 @@ class RegTelegramView(APIView):
             serializer = UserSerializer(user)
             return Response(serializer.data)
         except Exception as e:
+            print(e)
             return Response({"error": f"Cannot register user: {e}"}, status=status.HTTP_400_BAD_REQUEST)
