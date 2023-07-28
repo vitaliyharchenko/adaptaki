@@ -9,7 +9,7 @@ class PolicyField(serializers.BaseSerializer):
     def to_representation(self, instance):
         for t in POLICY_CHOICES:
             if t[0] == instance:
-                return t[1]
+                return {"verbose": t[1], "id": t[0]}
         return instance
 
 
@@ -19,7 +19,7 @@ class TypeField(serializers.BaseSerializer):
     def to_representation(self, instance):
         for t in TYPE_CHOICES:
             if t[0] == instance:
-                return t[1]
+                return {"verbose": t[1], "id": t[0]}
         return instance
 
 
@@ -50,5 +50,5 @@ class QuestionSerializerWithAnswer(QuestionSerializer):
     
     class Meta:
         model = Question
-        fields = ['pk', 'question_text', 'image', 'explanation_image',
+        fields = ['pk', 'question_text', 'image', 'explanation_text', 'explanation_image',
                   'max_score', 'type', 'checking_policy', 'all_options', 'nodes', 'exam_tag']
