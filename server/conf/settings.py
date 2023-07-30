@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'markdownx',
+    'ckeditor',
+    'ckeditor_uploader',
 
     # My apps
     'apps.graph',
@@ -179,3 +181,25 @@ MARKDOWNX_MARKDOWN_EXTENSIONS = [
     'markdown.extensions.extra',
     'mdx_math'
 ]
+
+
+# CKEDITOR
+# https://github.com/django-ckeditor/django-ckeditor#plugins
+
+CKEDITOR_UPLOAD_PATH = "ckeditor/"
+CKEDITOR_RESTRICT_BY_DATE = True
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['RemoveFormat', 'Source'],
+            {'name': 'math', 'items': ['Mathjax', ]},
+        ],
+        'mathJaxLib': '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML',
+        'extraPlugins': ','.join(['mathjax',]),
+    }
+}

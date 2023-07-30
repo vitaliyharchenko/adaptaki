@@ -3,6 +3,7 @@ from django.forms import ModelForm
 from markdownx.widgets import AdminMarkdownxWidget
 from markdownx.admin import MarkdownxModelAdmin
 from markdownx.models import MarkdownxField
+from ckeditor.widgets import CKEditorWidget
 from .models import Question, QuestionOption
 
 
@@ -29,6 +30,7 @@ class QuestionAdminForm(ModelForm):
         fields = "__all__"
         widgets = {
             "question_text": BigMarkdownTextArea(attrs={"cols": 10, "rows": 6, "style": 'width: 95%'}),
+            "question_text_new": CKEditorWidget(),
             "explanation_text": BigMarkdownTextArea(attrs={"cols": 10, "rows": 4, "style": 'width: 95%'}),
         }
 
@@ -45,6 +47,7 @@ class QuestionAdmin(MarkdownxModelAdmin):
         ("Тип задачи", {"fields": [
             "type", "max_score", "checking_policy"]}),
         ("Условие задачи", {"fields": ["question_text", "image"]}),
+        ("Новое Условие задачи", {"fields": ["question_text_new"]}),
         ("Пояснение", {"fields": [
             "explanation_text", "explanation_image"]}),
         ("Привязка к рубрикаторам", {"fields": [
