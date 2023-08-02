@@ -1,5 +1,7 @@
 from django.core.management.base import AppCommand
 from markdownx.utils import markdownify
+from markdown_katex.extension import tex2html
+from html2image import Html2Image
 import markdown
 from apps.questions.models import Question, QuestionOption
 
@@ -11,13 +13,10 @@ class Command(AppCommand):
 
     def handle(self, *args, **kwargs):
 
-        question = Question.objects.get(pk=12782)
+        questions = Question.objects.filter(pk__in=[10674, 2, 12782])
 
-        # question_text = markdownify(question.question_text)
-        question_text = markdown.markdown(
-            question.question_text, extensions=['mdx_math'])
-        question_text_new = question.question_text_new
+        for question in questions:
 
-        print(f"{question_text}")
-        print(f"***")
-        print(f"{question_text_new}")
+            hti = Html2Image()
+
+            hti.screenshot(url=f'http://127.0.0.1:8000/questions/{question.pk}/html', save_as=f'question_{question.pk}.png', size=(600, 500))

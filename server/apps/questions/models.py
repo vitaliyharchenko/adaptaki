@@ -1,6 +1,7 @@
 from django.db import models
 from markdownx.models import MarkdownxField
 from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 from apps.results.models import StringResult
 
 
@@ -43,7 +44,7 @@ TYPE_CHOICES = [
 class Question(models.Model):
     # основное
     question_text = MarkdownxField(verbose_name='Текст вопроса')
-    question_text_new = RichTextField(verbose_name='Текст вопроса')
+    question_text_new = RichTextUploadingField(verbose_name='Текст вопроса')
     explanation_text = MarkdownxField(
         verbose_name='Комментарий (пояснение) к вопросу', blank=True)
 
@@ -54,6 +55,7 @@ class Question(models.Model):
         null=True,
         blank=True
     )
+
     explanation_image = models.ImageField(
         verbose_name='Картинка в пояснении',
         upload_to=get_question_image_directory_path,

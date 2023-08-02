@@ -97,3 +97,12 @@ class RandomQuestion(APIView):
         else:
             serializer = QuestionSerializer(question)
         return Response(serializer.data)
+
+
+from django.views.generic import TemplateView
+from django.views.generic import DetailView
+
+class QuestionHtmlView(DetailView):
+    model = Question
+    context_object_name = "question"
+    template_name = "questions/question.html"

@@ -176,7 +176,7 @@ REST_FRAMEWORK = {
 
 MARKDOWNX_MARKDOWN_EXTENSIONS = [
     'markdown.extensions.extra',
-    'mdx_math'
+    'mdx_math',
 ]
 
 
@@ -190,13 +190,14 @@ CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'Custom',
         'toolbar_Custom': [
-            ['Bold', 'Italic', 'Underline'],
+            ['Bold', 'Italic', 'Underline', 'RemoveFormat'],
             ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-            ['Link', 'Unlink'],
-            ['RemoveFormat', 'Source'],
-            {'name': 'math', 'items': ['Mathjax', ]},
+            {'name': 'insert', 'items': ['Image', 'Table', 'Link', 'Unlink']},
+            {'name': 'math', 'items': ['Mathjax']},
+            {'name': 'clipboard', 'items': ['Copy', 'Paste', 'PasteFromWord', '-', 'Undo', 'Redo']},
+            ['Source'],
         ],
         'mathJaxLib': '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML',
-        'extraPlugins': ','.join(['mathjax',]),
+        'extraPlugins': ','.join(['mathjax', 'tabletools', 'image', 'image2', 'uploadimage', 'smiley']),
     }
 }
