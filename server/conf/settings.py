@@ -39,9 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.forms',
 
-    # Bot
-    'bot',
-
     # Modules
     'rest_framework',
     'rest_framework.authtoken',
