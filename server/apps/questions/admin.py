@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.forms import ModelForm
 from markdownx.widgets import AdminMarkdownxWidget
-from markdownx.admin import MarkdownxModelAdmin
 from markdownx.models import MarkdownxField
 from ckeditor.widgets import CKEditorWidget
 from .models import Question, QuestionOption
@@ -36,7 +35,7 @@ class QuestionAdminForm(ModelForm):
 
 
 @admin.register(Question)
-class QuestionAdmin(MarkdownxModelAdmin):
+class QuestionAdmin(admin.ModelAdmin):
     inlines = [QuestionOptionInline]
     form = QuestionAdminForm
     list_filter = ["type", "max_score"]
@@ -46,8 +45,7 @@ class QuestionAdmin(MarkdownxModelAdmin):
     fieldsets = [
         ("Тип задачи", {"fields": [
             "type", "max_score", "checking_policy"]}),
-        ("Условие задачи", {"fields": ["question_text", "image"]}),
-        ("Новое Условие задачи", {"fields": ["question_text_new"]}),
+        ("Условие задачи", {"fields": ["question_text_new", "image"]}),
         ("Пояснение", {"fields": [
             "explanation_text", "explanation_image"]}),
         ("Привязка к рубрикаторам", {"fields": [

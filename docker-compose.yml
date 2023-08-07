@@ -1,6 +1,16 @@
 version: '3.9'
 
-services:   
+services:
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/code/staticfiles
+      - media_volume:/code/mediafiles
+    ports:
+      - 1337:80
+    depends_on:
+      - web
+
   # Django application
   web:
     # Папка, из которой берется Dockerfile
@@ -14,12 +24,16 @@ services:
       # сервер будет перезагружаться при изменениях в коде
       - ./server/:/code/
       # статика будет храниться и вне контейнера
-      - ./data/static:/code/static
-      - ./data/media:/code/media
+      - static_volume:/code/staticfiles
+      - media_volume:/code/mediafiles
      
-    # Exposing port 8000
-    ports:
-      - "8000:8000"
+    # port 8000 доступен другим контейнерам
+    expose:
+      - 8000
+
+    # 8000 виден извне
+    # ports:
+    #   - "8000:8000"
 
     restart: "on-failure"
 
@@ -43,6 +57,20 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    env_file:
+      - ./.env.dev.db
+
+  telegram-bot:
+    # Папка, из которой берется Dockerfile
+    build: ./bot
+    volumes:
+      - ./bot/:/code
+    restart: always
+    command: sh -c "python main.py"
+    depends_on:
+      - web
 
 volumes:
   postgres_data:
+  static_volume:
+  media_volume:
