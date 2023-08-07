@@ -1,4 +1,5 @@
 venv
+data
 .idea/
 __pycache__/
 *.py[cod]

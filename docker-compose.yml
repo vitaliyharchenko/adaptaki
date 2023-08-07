@@ -1,0 +1,48 @@
+version: '3.9'
+
+services:   
+  # Django application
+  web:
+    # Папка, из которой берется Dockerfile
+    build: ./server
+   
+    # Build commands
+    command: sh -c "python manage.py makemigrations &&
+                   python manage.py migrate &&
+                   python manage.py collectstatic &&
+                   gunicorn web.wsgi:application --bind 0.0.0.0:8000"
+                   
+    # Storage volumes
+    # volumes:
+    #   - static_volume:/home/app/web/staticfiles
+    #   - media_volume:/home/app/web/mediafiles
+     
+    # Exposing port 8000
+    ports:
+      - "8000:8000"
+    # expose: 
+    #   - 8000
+
+    restart: "on-failure"
+
+    depends_on:
+      - db
+
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+  
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
