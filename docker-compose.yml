@@ -7,21 +7,19 @@ services:
     build: ./server
    
     # Build commands
-    command: sh -c "python manage.py makemigrations &&
-                   python manage.py migrate &&
-                   python manage.py collectstatic --no-input &&
-                   python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py runserver 0.0.0.0:8000"
     
     # Storage volumes
-    # volumes:
-    #   - static_volume:/home/app/web/staticfiles
-    #   - media_volume:/home/app/web/mediafiles
+    volumes:
+      # сервер будет перезагружаться при изменениях в коде
+      - ./server/:/code/
+      # статика будет храниться и вне контейнера
+      - ./data/static:/code/static
+      - ./data/media:/code/media
      
     # Exposing port 8000
     ports:
       - "8000:8000"
-    # expose: 
-    #   - 8000
 
     restart: "on-failure"
 
@@ -32,11 +30,15 @@ services:
       - POSTGRES_NAME=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    
+    env_file:
+      - ./.env.dev
   
   db:
     image: postgres
+    # файлы базы хранятся снаружи контейнера
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
@@ -44,5 +46,3 @@ services:
 
 volumes:
   postgres_data:
-  static_volume:
-  media_volume:

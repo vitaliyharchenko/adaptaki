@@ -1,8 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
-from dal import autocomplete
-from apps.graph.models import Subject
 from .serializers import ExamTreeSerializer
 from .models import Exam
 

@@ -1,5 +1,13 @@
+# Tutorial by
+# https://testdriven.io/blog/dockerizing-django-with-postgres-gunicorn-and-nginx/
+
 # Fetching official base image for python
-FROM python:3
+FROM python:3.11.4-slim-buster
+
+# Upgrape all the packages
+RUN apt-get update && apt-get -y dist-upgrade
+RUN apt-get -y install build-essential gcc python3-dev python3-pip
+RUN apt install -y netcat
 
 # Setting up the work directory
 WORKDIR /code
@@ -26,5 +34,13 @@ RUN pip install gunicorn
 # Installing dependencies
 RUN pip install --no-cache-dir -r ./requirements.txt
 
+# copy entrypoint.sh
+COPY entrypoint.sh /code/
+RUN sed -i 's/\r$//g' /code/entrypoint.sh
+RUN chmod +x /code/entrypoint.sh
+
 # Copying all the files in our project
 COPY . /code/
+
+# run entrypoint.sh
+ENTRYPOINT ["/code/entrypoint.sh"]

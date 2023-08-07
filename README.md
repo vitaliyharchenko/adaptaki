@@ -54,6 +54,7 @@
 
 -   https://github.com/docker/awesome-compose/tree/master/official-documentation-samples/django/
 -   https://www.geeksforgeeks.org/how-to-dockerize-django-application-for-production-deployement-with-gunicorn-and-nginx/
+-   https://testdriven.io/blog/dockerizing-django-with-postgres-gunicorn-and-nginx/
 
 ## Django
 
