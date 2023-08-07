@@ -1,7 +1,7 @@
-source env/bin/activate
+# Запуск проекта
 
-Bot wiki
-https://github.com/python-telegram-bot/python-telegram-bot/wiki/Architecture
+-   с venv `source env/bin/activate`
+-   c docker `docker compose up`
 
 # Что сделано
 
