@@ -29,9 +29,6 @@ COPY requirements.txt /code/
 RUN pip install --upgrade pip
 
 # Installing dependencies
-RUN pip install gunicorn
-
-# Installing dependencies
 RUN pip install --no-cache-dir -r ./requirements.txt
 
 # copy entrypoint.sh
