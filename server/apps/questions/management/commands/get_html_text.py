@@ -13,19 +13,21 @@ class Command(AppCommand):
 
     def handle(self, *args, **kwargs):
 
-        question = Question.objects.get(pk=12712)
-        explanation_text = question.explanation_text
+        questions = Question.objects.all()
 
-        md = markdown.Markdown(
-            extensions=[mdx_math.makeExtension(enable_dollar_delimiter=True)])
-        explanation_text_new = md.convert(explanation_text)
+        for question in questions:
+            explanation_text = question.explanation_text
 
-        explanation_text_new = explanation_text_new.replace(
-            '<script type="math/tex">', '<span class="math-tex">\(')
-        explanation_text_new = explanation_text_new.replace(
-            '<script type="math/tex; mode=display">', '<span class="math-tex">\(')
-        explanation_text_new = explanation_text_new.replace(
-            '</script>', '\)</span>')
+            md = markdown.Markdown(
+                extensions=[mdx_math.makeExtension(enable_dollar_delimiter=True)])
+            explanation_text_new = md.convert(explanation_text)
 
-        question.explanation_text_new = explanation_text_new
-        question.save()
+            explanation_text_new = explanation_text_new.replace(
+                '<script type="math/tex">', '<span class="math-tex">\(')
+            explanation_text_new = explanation_text_new.replace(
+                '<script type="math/tex; mode=display">', '<span class="math-tex">\(')
+            explanation_text_new = explanation_text_new.replace(
+                '</script>', '\)</span>')
+
+            question.explanation_text_new = explanation_text_new
+            question.save()

@@ -31,6 +31,7 @@ class QuestionAdminForm(ModelForm):
             "question_text": BigMarkdownTextArea(attrs={"cols": 10, "rows": 6, "style": 'width: 95%'}),
             "question_text_new": CKEditorWidget(),
             "explanation_text": BigMarkdownTextArea(attrs={"cols": 10, "rows": 4, "style": 'width: 95%'}),
+            "explanation_text_new": CKEditorWidget(),
         }
 
 
@@ -46,6 +47,8 @@ class QuestionAdmin(admin.ModelAdmin):
         ("Тип задачи", {"fields": [
             "type", "max_score", "checking_policy"]}),
         ("Условие задачи", {"fields": ["question_text_new", "image"]}),
+        ("Пояснение new", {"fields": [
+            "explanation_text_new"]}),
         ("Пояснение", {"fields": [
             "explanation_text", "explanation_image"]}),
         ("Привязка к рубрикаторам", {"fields": [
