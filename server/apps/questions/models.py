@@ -14,12 +14,15 @@ class PolicyType:
     ONE_WRONG_MINUS_ONE = 1
     ONE_WRONG_MINUS_ALL = 2
 
+
 POLICY_CHOICES = [
     (PolicyType.ONE_WRONG_MINUS_ONE, 'Один неверный ответ, минус один балл.'),
     (PolicyType.ONE_WRONG_MINUS_ALL, 'Один неверный ответ, минус все баллы.'),
 ]
 
 # типы заданий
+
+
 class QuestionType:
     STRING = 1
     FLOAT = 7
@@ -28,6 +31,7 @@ class QuestionType:
     ONE_CHOICE = 4
     MANY_CHOICE = 5
     COMPOSITE = 6
+
 
 TYPE_CHOICES = [
     (QuestionType.STRING, 'Обычная проверка строки'),
@@ -47,6 +51,8 @@ class Question(models.Model):
     question_text_new = RichTextUploadingField(verbose_name='Текст вопроса')
     explanation_text = MarkdownxField(
         verbose_name='Комментарий (пояснение) к вопросу', blank=True)
+    explanation_text_new = RichTextUploadingField(
+        verbose_name='Комментарий (пояснение) к вопросу')
 
     # картинки
     image = models.ImageField(
@@ -99,7 +105,7 @@ class Question(models.Model):
     def all_options(self):
         opts = QuestionOption.objects.filter(question=self)
         return opts
-    
+
     def true_options(self):
         options = QuestionOption.objects.filter(question=self, is_true=True)
         return options
@@ -122,11 +128,11 @@ class Question(models.Model):
             case QuestionType.FLOAT:
                 if answer is None or not str(answer):
                     return 0
-                
+
                 answer = answer.strip()
                 float_answer = 0
                 try:
-                    float_answer=float(answer)
+                    float_answer = float(answer)
                 except ValueError:
                     return 0
 
@@ -136,12 +142,14 @@ class Question(models.Model):
                         return self.max_score
                 return 0
             case QuestionType.ORDERED_SYMBOLS:
-                right_answers = [int(x) for x in self.all_options()[0].option_text.strip()]
+                right_answers = [int(x) for x in self.all_options()[
+                    0].option_text.strip()]
                 answers = [int(x) for x in answer.strip()]
 
                 excess_count = max(0, len(right_answers) - len(answers))
 
-                mismatch = [ans[0] == ans[1] for ans in zip(right_answers, answers)]
+                mismatch = [ans[0] == ans[1]
+                            for ans in zip(right_answers, answers)]
                 mismatch_count = mismatch.count(False)
 
                 if self.checking_policy == PolicyType.ONE_WRONG_MINUS_ONE:
@@ -152,11 +160,12 @@ class Question(models.Model):
                     return 0
                 return 0
             case QuestionType.UNORDERED_SYMBOLS:
-                right_answers = [int(x) for x in self.all_options()[0].option_text.strip()]
+                right_answers = [int(x) for x in self.all_options()[
+                    0].option_text.strip()]
                 answers = [int(x) for x in answer.strip()]
 
                 excess_count = max(0, len(right_answers) - len(answers))
-                
+
                 mismatch = [ans in right_answers for ans in answers]
                 mismatch_count = mismatch.count(False)
 
@@ -193,7 +202,7 @@ class Question(models.Model):
                     else:
                         if opt.pk in user_options:
                             false_count += 1
-                
+
                 # print(f"True:{true_count}, false:{false_count}, miss:{miss_count}")
 
                 if self.checking_policy == PolicyType.ONE_WRONG_MINUS_ONE:
@@ -202,16 +211,17 @@ class Question(models.Model):
                     if false_count == 0 and miss_count == 0:
                         return self.max_score
                     return 0
-                
+
                 return 0
             case QuestionType.COMPOSITE:
                 print('check_composite_answer', answer)
             case _:
                 pass
-    
+
     def create_result(self, score, answer, user):
         print(f"Create result {score} {answer} {user}")
-        result = StringResult.objects.create(answer=answer, question=self, user=user, score=score, max_score=self.max_score)
+        result = StringResult.objects.create(
+            answer=answer, question=self, user=user, score=score, max_score=self.max_score)
         print(f"Result created: {result}")
 
 
