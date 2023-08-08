@@ -41,14 +41,14 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ['pk', 'question_text_new', 'image', 'explanation_text', 'explanation_image',
+        fields = ['pk', 'question_text_new', 'explanation_text_new',
                   'max_score', 'type', 'checking_policy', 'nodes', 'exam_tag']
 
 
 class QuestionSerializerWithAnswer(QuestionSerializer):
     all_options = OptionSerializer(many=True)
-    
+
     class Meta:
         model = Question
-        fields = ['pk', 'question_text_new', 'image', 'explanation_text', 'explanation_image',
+        fields = ['pk', 'question_text_new', 'explanation_text_new',
                   'max_score', 'type', 'checking_policy', 'all_options', 'nodes', 'exam_tag']

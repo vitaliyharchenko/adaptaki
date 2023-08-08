@@ -166,7 +166,11 @@ async def explanation_handler(callback: types.CallbackQuery, callback_data: Ques
         else:
             options_text = f"Правильный ответ: {true_options[0]['option_text']}"
 
-    message_text = f"<b>Пояснение к вопросу {question['pk']}</b>\n\n{options_text}\n{question['explanation_text']}"
+    e_text = question['explanation_text_new']
+    e_text = e_text.replace("<", "&lt;")
+    e_text = e_text.replace(">", "&gt;")
+
+    message_text = f"<b>Пояснение к вопросу {question['pk']}</b>\n\n{options_text}\n{e_text}"
 
     await callback.message.answer(text=message_text, reply_markup=keyboard)
     await state.set_state(QuestionStates.show_explanation)
