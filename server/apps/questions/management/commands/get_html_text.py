@@ -16,18 +16,26 @@ class Command(AppCommand):
         questions = Question.objects.all()
 
         for question in questions:
+            question_text = question.question_text_new
             explanation_text = question.explanation_text
 
-            md = markdown.Markdown(
-                extensions=[mdx_math.makeExtension(enable_dollar_delimiter=True)])
-            explanation_text_new = md.convert(explanation_text)
+            # md = markdown.Markdown(
+            #     extensions=[mdx_math.makeExtension(enable_dollar_delimiter=True)])
+            # explanation_text_new = md.convert(explanation_text)
 
-            explanation_text_new = explanation_text_new.replace(
-                '<script type="math/tex">', '<span class="math-tex">\(')
-            explanation_text_new = explanation_text_new.replace(
-                '<script type="math/tex; mode=display">', '<span class="math-tex">\(')
-            explanation_text_new = explanation_text_new.replace(
-                '</script>', '\)</span>')
+            question_text_new = question_text.replace(
+                '<img alt="" width="400"', '<img alt="" width="600"')
+            question.question_text_new = question_text_new
 
-            question.explanation_text_new = explanation_text_new
+            # explanation_text_new = explanation_text_new.replace(
+            #     '<script type="math/tex">', '<span class="math-tex">\(')
+            # explanation_text_new = explanation_text_new.replace(
+            #     '<script type="math/tex; mode=display">', '<span class="math-tex">\(')
+            # explanation_text_new = explanation_text_new.replace(
+            #     '</script>', '\)</span>')
+
+            # if question.explanation_image:
+            #     explanation_text_new += f'<p><img alt="" width="400" src="/media/{question.explanation_image}"/></p>'
+
+            # question.explanation_text_new = explanation_text_new
             question.save()
