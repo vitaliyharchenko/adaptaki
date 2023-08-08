@@ -4,7 +4,6 @@ import json
 from db import database
 
 
-BASE_URL = 'http://localhost:1337/'
 BASE_URL = 'http://web:8000/'
 SECRET_CODE = '228'
 
@@ -34,7 +33,6 @@ def api_request(url, token="", data={}, method='GET'):
         req = Request(full_url, urlencode(
             data).encode(), headers, method='POST')
 
-    print(full_url)
     response = urlopen(req)
 
     response = json.load(response)
