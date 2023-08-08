@@ -40,7 +40,7 @@ class QuestionAdmin(admin.ModelAdmin):
     form = QuestionAdminForm
     list_filter = ["type", "max_score"]
     autocomplete_fields = ["exam_tag", "nodes"]
-    search_fields = ["pk", "question_text"]
+    search_fields = ["pk", "question_text__icontains"]
     search_help_text = "Поиск по id и условияю задачи"
     fieldsets = [
         ("Тип задачи", {"fields": [

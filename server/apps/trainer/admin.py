@@ -9,6 +9,7 @@ from .models import SubjectExamNumber, ExamTag, Exam, SubjectExam
 # class ExamAdmin(admin.ModelAdmin):
 #     pass
 
+
 @admin.register(SubjectExamNumber)
 class SubjectExamNumberAdmin(admin.ModelAdmin):
     pass
@@ -17,4 +18,4 @@ class SubjectExamNumberAdmin(admin.ModelAdmin):
 @admin.register(ExamTag)
 class ExamTagAdmin(admin.ModelAdmin):
     list_filter = ["subject_exam_number", "is_active"]
-    search_fields = ["title"]
+    search_fields = ["title__icontains"]
