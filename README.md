@@ -37,6 +37,7 @@
     -   суммируем средние и максимальные баллы
 -   [] Закрыть задачами все вершины без задач `python manage.py classify_nodes graph`
 -   [] Перенести картинки в условие задачи
+-   [] Уменьшить сборку TexLive (https://packages.debian.org/search?keywords=texlive)
 
 # забавно
 

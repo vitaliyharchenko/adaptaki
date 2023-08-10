@@ -2,12 +2,18 @@
 # https://testdriven.io/blog/dockerizing-django-with-postgres-gunicorn-and-nginx/
 
 # Fetching official base image for python
-FROM python:3.11.4-slim-buster
+FROM python:3.11.4-slim
 
 # Upgrape all the packages
-RUN apt-get update && apt-get -y dist-upgrade
-RUN apt-get -y install build-essential gcc python3-dev python3-pip
-RUN apt install -y netcat
+RUN apt-get update && apt-get -y dist-upgrade && apt install -y netcat-openbsd && apt-get -y install build-essential
+# RUN apt-get -y install build-essential gcc python3-dev python3-pip
+
+# Install latex for svg nmath generation
+# https://tug.org/texlive/quickinstall.html
+RUN apt-get -y install texlive texlive-latex-extra
+# ADD https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz /tmp/texlive.tar.gz
+# RUN cd /tmp && zcat < /tmp/texlive.tar.gz | tar xf -
+# RUN perl /tmp/install-tl*/install-tl --no-interaction
 
 # Setting up the work directory
 WORKDIR /code
@@ -29,7 +35,7 @@ COPY requirements.txt /code/
 RUN pip install --upgrade pip
 
 # Installing dependencies
-RUN pip install --no-cache-dir -r ./requirements.txt
+RUN pip install -r ./requirements.txt
 
 # copy entrypoint.sh
 COPY entrypoint.sh /code/

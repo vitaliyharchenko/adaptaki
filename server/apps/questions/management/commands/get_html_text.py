@@ -12,20 +12,36 @@ class Command(AppCommand):
     help = 'Fond questions with zero true answers'
 
     def handle(self, *args, **kwargs):
+            
+        question = Question.objects.get(pk=12782)
 
-        questions = Question.objects.all()
+        question_text = question.question_text
 
-        for question in questions:
-            question_text = question.question_text_new
-            explanation_text = question.explanation_text
+        extension_configs = {
+            'mdx_math_svg': {
+                'inline_class': 'math',
+                'display_class': 'math'
+            }
+        }
+        md = markdown.Markdown(extensions=['mdx_math_svg'], extension_configs=extension_configs)
+
+        svg_text = md.convert(question_text)
+
+        print(svg_text)
+
+        # questions = Question.objects.all()
+
+        # for question in questions:
+        #     question_text = question.question_text_new
+        #     explanation_text = question.explanation_text
 
             # md = markdown.Markdown(
             #     extensions=[mdx_math.makeExtension(enable_dollar_delimiter=True)])
             # explanation_text_new = md.convert(explanation_text)
 
-            question_text_new = question_text.replace(
-                '<img alt="" width="400"', '<img alt="" width="600"')
-            question.question_text_new = question_text_new
+            # question_text_new = question_text.replace(
+            #     '<img alt="" width="400"', '<img alt="" width="600"')
+            # question.question_text_new = question_text_new
 
             # explanation_text_new = explanation_text_new.replace(
             #     '<script type="math/tex">', '<span class="math-tex">\(')
@@ -38,4 +54,4 @@ class Command(AppCommand):
             #     explanation_text_new += f'<p><img alt="" width="400" src="/media/{question.explanation_image}"/></p>'
 
             # question.explanation_text_new = explanation_text_new
-            question.save()
+            # question.save()
