@@ -10,7 +10,8 @@ RUN apt-get update && apt-get -y dist-upgrade && apt install -y netcat-openbsd &
 
 # Install latex for svg nmath generation
 # https://tug.org/texlive/quickinstall.html
-RUN apt-get -y install texlive texlive-latex-extra
+RUN apt-get -y install texlive texlive-latex-extra texlive-fonts-extra
+RUN apt-get -y install wkhtmltopdf
 # ADD https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz /tmp/texlive.tar.gz
 # RUN cd /tmp && zcat < /tmp/texlive.tar.gz | tar xf -
 # RUN perl /tmp/install-tl*/install-tl --no-interaction

@@ -3,6 +3,8 @@ from markdownx.utils import markdownify
 from markdownx.utils import markdownify
 import markdown
 import mdx_math
+from django.template.loader import render_to_string
+import imgkit
 from apps.questions.models import Question, QuestionOption
 
 
@@ -12,22 +14,26 @@ class Command(AppCommand):
     help = 'Fond questions with zero true answers'
 
     def handle(self, *args, **kwargs):
-            
-        question = Question.objects.get(pk=12782)
 
-        question_text = question.question_text
+        question = Question.objects.get(pk=12545)
 
-        extension_configs = {
-            'mdx_math_svg': {
-                'inline_class': 'math',
-                'display_class': 'math'
-            }
-        }
-        md = markdown.Markdown(extensions=['mdx_math_svg'], extension_configs=extension_configs)
+        html = render_to_string('questions/question.html', { 'question': question })
 
-        svg_text = md.convert(question_text)
+        imgkit.from_url(f'http://web:8000/questions/{question.pk}/html', 'out.jpg')
 
-        print(svg_text)
+        # question_text = question.question_text
+
+        # extension_configs = {
+        #     'mdx_math_svg': {
+        #         'inline_class': 'math',
+        #         'display_class': 'math'
+        #     }
+        # }
+        # md = markdown.Markdown(extensions=['mdx_math_svg'], extension_configs=extension_configs)
+
+        # svg_text = md.convert(question_text)
+
+        # print(svg_text)
 
         # questions = Question.objects.all()
 

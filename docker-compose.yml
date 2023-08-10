@@ -17,7 +17,7 @@ services:
     build: ./server
    
     # Build commands
-    command: sh -c "gunicorn conf.wsgi:application --bind 0.0.0.0:8000"
+    command: sh -c "gunicorn conf.wsgi:application --bind 0.0.0.0:8000 --reload"
     
     # Storage volumes
     volumes:
