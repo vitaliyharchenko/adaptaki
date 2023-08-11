@@ -17,9 +17,12 @@ class Command(AppCommand):
 
         question = Question.objects.get(pk=12545)
 
-        html = render_to_string('questions/question.html', { 'question': question })
+        html = render_to_string('questions/question.html', {'question': question})
 
-        imgkit.from_url(f'http://web:8000/questions/{question.pk}/html', 'out.jpg')
+        html = html.replace("/media/", "/code/mediafiles/")
+
+        # imgkit.from_url(f'http://web:8000/questions/{question.pk}/html', 'out.jpg')
+        imgkit.from_string(html, 'out.jpg', options={"enable-local-file-access": "", "crop-w": 630})
 
         # question_text = question.question_text
 
