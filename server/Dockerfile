@@ -10,11 +10,7 @@ RUN apt-get update && apt-get -y dist-upgrade && apt install -y netcat-openbsd &
 
 # Install latex for svg nmath generation
 # https://tug.org/texlive/quickinstall.html
-RUN apt-get -y install texlive texlive-latex-extra texlive-fonts-extra
-RUN apt-get -y install wkhtmltopdf
-# ADD https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz /tmp/texlive.tar.gz
-# RUN cd /tmp && zcat < /tmp/texlive.tar.gz | tar xf -
-# RUN perl /tmp/install-tl*/install-tl --no-interaction
+RUN apt-get -y install texlive texlive-latex-extra texlive-fonts-extra wkhtmltopdf
 
 # Setting up the work directory
 WORKDIR /code
@@ -26,8 +22,10 @@ ENV PYTHONDONTWRITEBYTECODE 1
 # Flushing out python buffer
 ENV PYTHONUNBUFFERED 1
 
-# Updating the os
-# RUN apk update 
+# copy entrypoint.sh
+COPY entrypoint.sh /code/
+RUN sed -i 's/\r$//g' /code/entrypoint.sh
+RUN chmod +x /code/entrypoint.sh
 
 # Copying requirement file
 COPY requirements.txt /code/
@@ -37,11 +35,6 @@ RUN pip install --upgrade pip
 
 # Installing dependencies
 RUN pip install -r ./requirements.txt
-
-# copy entrypoint.sh
-COPY entrypoint.sh /code/
-RUN sed -i 's/\r$//g' /code/entrypoint.sh
-RUN chmod +x /code/entrypoint.sh
 
 # Copying all the files in our project
 COPY . /code/

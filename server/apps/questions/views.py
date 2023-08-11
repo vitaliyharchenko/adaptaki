@@ -101,6 +101,8 @@ class RandomQuestion(APIView):
 
 from django.views.generic import TemplateView
 from django.views.generic import DetailView
+# from latex2svg import latex2svg
+from bs4 import BeautifulSoup
 
 class QuestionHtmlView(DetailView):
     model = Question

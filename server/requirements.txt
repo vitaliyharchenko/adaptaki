@@ -26,3 +26,5 @@ sqlparse==0.4.4
 gunicorn==21.2.0
 mdx_math_svg
 imgkit
+beautifulsoup4
+tex2svg

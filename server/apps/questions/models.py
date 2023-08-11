@@ -1,9 +1,8 @@
 from django.db import models
 from markdownx.models import MarkdownxField
-from ckeditor.fields import RichTextField
 from ckeditor_uploader.fields import RichTextUploadingField
 from apps.results.models import StringResult
-import markdown
+from .utils.markdown import beautify
 
 
 def get_question_image_directory_path(instance, filename):
@@ -110,20 +109,10 @@ class Question(models.Model):
     def true_options(self):
         options = QuestionOption.objects.filter(question=self, is_true=True)
         return options
-    
-    def get_html_text(self):
-        question_text = self.question_text
-        extension_configs = {
-            'mdx_math_svg': {
-                'inline_class': 'math',
-                'display_class': 'math'
-            }
-        }
-        md = markdown.Markdown(extensions=['mdx_math_svg'], extension_configs=extension_configs)
 
-        svg_text = md.convert(question_text)
-
-        return svg_text
+    def get_html_text_new(self):
+        question_text_new = self.question_text_new
+        return beautify(question_text_new)
 
     def check_answer(self, answer, user):
         score = self.get_score(answer)

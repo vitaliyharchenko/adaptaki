@@ -31,11 +31,7 @@
 <body> 
     <div class="container">
     {% autoescape off %}
-    {{ question.question_text_new }}
-    {% endautoescape %}
-    <hr>
-    {% autoescape off %}
-    {{ question.get_html_text }}
+    {{ question.get_html_text_new }}
     {% endautoescape %}
     <p style="color: #bbb"><small>Все авторские права принадлежат Харченко Виталию Викторовичу</small></p>
     </div>
