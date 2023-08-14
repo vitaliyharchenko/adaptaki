@@ -42,7 +42,7 @@ class QuestionAdmin(admin.ModelAdmin):
             "type", "max_score", "checking_policy"]}),
         ("Условие задачи", {"fields": ["question_text_new"]}),
         ("Пояснение", {"fields": [
-            "explanation_text_new"]}),
+            "explanation_text_new", "thumbnail"]}),
         ("Привязка к рубрикаторам", {"fields": [
             "nodes", "exam_tag"], "classes": ["collapse"]}),
     ]

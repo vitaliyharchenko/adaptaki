@@ -46,13 +46,23 @@ TYPE_CHOICES = [
 
 # Модель задания
 class Question(models.Model):
-    # основное
+    # архив данных
     question_text = MarkdownxField(verbose_name='Текст вопроса')
-    question_text_new = RichTextUploadingField(verbose_name='Текст вопроса')
     explanation_text = MarkdownxField(
         verbose_name='Комментарий (пояснение) к вопросу', blank=True)
+    
+    # новые тексты
+    question_text_new = RichTextUploadingField(verbose_name='Текст вопроса')
     explanation_text_new = RichTextUploadingField(
         verbose_name='Комментарий (пояснение) к вопросу')
+
+    # для телеграма
+    thumbnail = models.ImageField(
+        verbose_name='Картинка для телеграма',
+        upload_to=get_question_image_directory_path,
+        null=True,
+        blank=True
+    )
 
     # картинки
     image = models.ImageField(

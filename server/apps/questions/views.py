@@ -3,6 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework import status
+from django.views.generic import DetailView
+
 from .models import Question
 from .serializers import QuestionSerializer, QuestionAnswerSerializer, QuestionSerializerWithAnswer
 
@@ -98,11 +100,6 @@ class RandomQuestion(APIView):
             serializer = QuestionSerializer(question)
         return Response(serializer.data)
 
-
-from django.views.generic import TemplateView
-from django.views.generic import DetailView
-# from latex2svg import latex2svg
-from bs4 import BeautifulSoup
 
 class QuestionHtmlView(DetailView):
     model = Question
