@@ -1,4 +1,5 @@
 from django.core.management.base import AppCommand
+from django.core.files import File
 from markdownx.utils import markdownify
 from markdownx.utils import markdownify
 import markdown
@@ -15,14 +16,15 @@ class Command(AppCommand):
 
     def handle(self, *args, **kwargs):
 
-        question = Question.objects.get(pk=12545)
+        question = Question.objects.get(pk=12782)
 
         html = render_to_string('questions/question.html', {'question': question})
 
         html = html.replace("/media/", "/code/mediafiles/")
 
-        # imgkit.from_url(f'http://web:8000/questions/{question.pk}/html', 'out.jpg')
-        imgkit.from_string(html, 'out.jpg', options={"enable-local-file-access": "", "crop-w": 630})
+        image = imgkit.from_string(html, False, options={"enable-local-file-access": "", "crop-w": 650})
+
+        question.thumbnail.save(f"thumb{question.pk}", File(image), save=True)
 
         # question_text = question.question_text
 
