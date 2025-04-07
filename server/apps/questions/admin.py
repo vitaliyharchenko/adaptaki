@@ -33,10 +33,10 @@ class QuestionAdminForm(ModelForm):
 class QuestionAdmin(admin.ModelAdmin):
     inlines = [QuestionOptionInline]
     form = QuestionAdminForm
-    list_filter = ["type", "max_score"]
+    list_filter = ["type", "max_score", "exam_tag"]
     autocomplete_fields = ["exam_tag", "nodes"]
     search_fields = ["pk", "question_text__icontains"]
-    search_help_text = "Поиск по id и условияю задачи"
+    search_help_text = "Поиск по id и условию задачи"
     fieldsets = [
         ("Тип задачи", {"fields": [
             "type", "max_score", "checking_policy"]}),
