@@ -4,6 +4,7 @@ from markdownx.widgets import AdminMarkdownxWidget
 from markdownx.models import MarkdownxField
 from ckeditor.widgets import CKEditorWidget
 from .models import Question, QuestionOption
+from django.urls import reverse
 
 
 class SmallMarkdownTextArea(AdminMarkdownxWidget):
@@ -46,3 +47,6 @@ class QuestionAdmin(admin.ModelAdmin):
         ("Привязка к рубрикаторам", {"fields": [
             "nodes", "exam_tag"], "classes": ["collapse"]}),
     ]
+
+    def get_view_on_site_url(self, obj):
+        return reverse('question_html', kwargs={'pk': obj.pk})
