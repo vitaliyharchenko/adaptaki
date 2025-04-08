@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
 
     # My apps
+    'apps.api',
     'apps.graph',
     'apps.results',
     'apps.questions',

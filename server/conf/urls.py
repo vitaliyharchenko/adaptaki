@@ -24,9 +24,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Apps
-    path('', include('apps.graph.urls')),
+    path('api/', include('apps.api.urls')),
     path('', include('apps.questions.urls')),
-    path('', include('apps.trainer.urls')),
     path('users/', include('apps.users.urls')),
 
     # Modules
