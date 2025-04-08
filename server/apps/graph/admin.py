@@ -6,6 +6,7 @@ from .models import Concept, Node
 class ConceptAdmin(admin.ModelAdmin):
     search_fields = ["title__icontains"]
     search_help_text = "Поиск по названиям концептов"
+    list_filter = ["subject"]
 
 
 @admin.register(Node)
