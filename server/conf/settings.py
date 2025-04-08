@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 import os
 
@@ -30,6 +31,11 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS",
 CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
 CSRF_COOKIE_SECURE = True
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # Vite dev server
+]
+CORS_ALLOW_CREDENTIALS = True
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -47,6 +53,7 @@ INSTALLED_APPS = [
     'markdownx',
     'ckeditor',
     'ckeditor_uploader',
+    'corsheaders',
 
     # My apps
     'apps.api',
@@ -58,6 +65,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -170,9 +178,23 @@ REST_FRAMEWORK = {
         # авторизация от django для дебага
         'rest_framework.authentication.SessionAuthentication',
 
-        # авторизация по токену для бота
+        # авторизация по постоянному токену для бота
         'rest_framework.authentication.TokenAuthentication',
+
+        # авторизация по обновляющемуся токену для SPA на React
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
+}
+
+
+# задаем настройки для обновления токенов
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
 

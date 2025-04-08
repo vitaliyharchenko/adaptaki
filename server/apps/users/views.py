@@ -1,3 +1,5 @@
+from .serializers import MyTokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.views import APIView
 from rest_framework import permissions
 from rest_framework.response import Response
@@ -67,3 +69,26 @@ class RegTelegramView(APIView):
         except Exception as e:
             print(e)
             return Response({"error": f"Cannot register user: {e}"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetUserProfile(APIView):
+    """
+    Получение данных текущего пользователя
+
+    Доступно только для аутентифицированных пользователей с JWT токеном
+
+    Для проверки: curl -H "Authorization: Bearer <your_jwt_token>" http://127.0.0.1:8000/api/users/me/
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, format=None):
+        """
+        Возвращает данные текущего пользователя
+        """
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
+
+
+# view кастомизированный под логин с помощью телефона
+class MyTokenView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer

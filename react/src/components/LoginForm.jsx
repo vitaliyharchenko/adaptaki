@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const LoginForm = () => {
-    const [username, setUsername] = useState("");
+    const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
     const navigate = useNavigate();
@@ -14,7 +14,7 @@ const LoginForm = () => {
             const response = await axios.post(
                 "http://localhost:8000/api/token/",
                 {
-                    username,
+                    phone,
                     password,
                 }
             );
@@ -30,9 +30,9 @@ const LoginForm = () => {
         <form onSubmit={handleSubmit}>
             <input
                 type="text"
-                placeholder="Логин"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Телефон"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
             />
             <input
                 type="password"
