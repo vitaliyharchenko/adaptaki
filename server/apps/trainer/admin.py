@@ -20,7 +20,7 @@ class SubjectExamNumberAdmin(admin.ModelAdmin):
 class QuestionInline(admin.TabularInline):
     model = Question
     fields = ['question_text', 'link_to_edit']
-    readonly_fields = ['link_to_edit']
+    readonly_fields = ['link_to_edit', 'question_text',]
     extra = 0
     show_change_link = True
 
