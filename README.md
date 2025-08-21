@@ -36,7 +36,7 @@
 4. Остановка и очистка:
     - `docker compose down -v`
 
-Сервис `web` автоматически выполнит миграции перед стартом. База данных — контейнер `db` (PostgreSQL 15) с healthcheck.
+Сервис `web` автоматически выполнит миграции и collectstatic перед стартом, работает через gunicorn. База данных — контейнер `db` (PostgreSQL 15).
 
 ## Переменные окружения
 
@@ -44,7 +44,36 @@
 
 -   `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`
 -   `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`
--   `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`
+-   `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS`
+
+## Деплой на сервер (ручной)
+
+1. Подключиться по SSH:
+    - `ssh vitaliyharchenko@89.169.182.234`
+2. Установить git (если нет):
+    - Ubuntu/Debian: `sudo apt update && sudo apt install -y git`
+3. Клонировать репозиторий (первый раз):
+    - `git clone https://github.com/vitaliyharchenko/adaptaki.git && cd adaptaki`
+    - далее: `git pull`
+4. Создать `.env` на сервере (на основе `env.example`) с прод-настройками:
+    - `DJANGO_DEBUG=0`
+    - `DJANGO_ALLOWED_HOSTS=89.169.182.234,localhost`
+    - `DJANGO_CSRF_TRUSTED_ORIGINS=http://89.169.182.234,http://localhost`
+    - замените пароли на надёжные.
+5. Запуск:
+    - `docker compose up -d --build`
+6. Проверка:
+    - открыть `http://89.169.182.234:8000/`
+
+Примечание: убедитесь, что в правилах фаервола (безопасности) Яндекс.Облака открыт TCP-порт 8000, либо настройте обратный прокси (nginx) на 80/443.
+
+## CI/CD через GitHub Actions (деплой по SSH)
+
+1. Добавьте секреты репозитория:
+    - `SSH_HOST=89.169.182.234`
+    - `SSH_USER=vitaliyharchenko`
+    - `SSH_KEY` — приватный ключ (PEM) пользователя для доступа к ВМ
+2. Workflow запускается на `push` в `main`: он подключается по SSH к серверу, делает `git pull` и `docker compose up -d --build`.
 
 ## Примечания
 

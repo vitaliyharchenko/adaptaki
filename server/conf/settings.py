@@ -20,13 +20,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
+def _env_bool(var_name: str, default: str = "0") -> bool:
+    return os.getenv(var_name, default).lower() in {"1", "true", "yes", "on"}
+
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-d%zit^%&@i5@x5a)xrzj#wzn1_m%8qlq5-=0p=zx*x%^_t%@3*'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'change-me-in-dev')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = _env_bool('DJANGO_DEBUG', '1')
 
-ALLOWED_HOSTS = []
+_allowed_hosts_env = os.getenv('DJANGO_ALLOWED_HOSTS', '').strip()
+ALLOWED_HOSTS = [h.strip() for h in _allowed_hosts_env.split(
+    ',') if h.strip()] if _allowed_hosts_env else []
+
+# CSRF trusted origins (comma-separated URLs like https://example.com,https://sub.example.com)
+_csrf_origins_env = os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS', '').strip()
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in _csrf_origins_env.split(
+    ',') if o.strip()] if _csrf_origins_env else []
 
 
 # Application definition
@@ -42,6 +53,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -129,6 +141,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
