@@ -79,3 +79,27 @@
 
 -   В режиме без Docker `server/conf/settings.py` автоматически использует SQLite при отсутствии `POSTGRES_*`/`DB_*`.
 -   Для продакшна выключайте DEBUG и задавайте надёжный `DJANGO_SECRET_KEY`.
+
+### Конспект: что мы настроили и как деплоить
+
+-   **Инфраструктура**: ВМ в Яндекс.Облаке со статическим IP и доступом по SSH. Установлен Docker и Docker Compose V2 (команда `docker compose`).
+-   **Проект (backend)**: Django 5 + PostgreSQL. Перевели конфиг на переменные окружения (`DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS`). Добавили `gunicorn` и `whitenoise` для продакшна.
+-   **Docker Compose**: Сервис `web` (gunicorn, авто `migrate` и `collectstatic`) и `db` (Postgres 15). Порт `8000` опубликован наружу.
+-   **Локальный запуск**: `cp env.example .env` → `docker compose up -d --build` → http://127.0.0.1:8000
+-   **ВМ — первый запуск**:
+    -   Клонировать репозиторий, создать `.env` (в проде `DJANGO_DEBUG=0`, добавить IP/домен в `ALLOWED_HOSTS` и `CSRF_TRUSTED_ORIGINS`).
+    -   Запустить: `docker compose up -d --build`.
+-   **CI/CD (GitHub Actions)**: Добавлен workflow `.github/workflows/deploy.yml` — деплой по SSH на ВМ при `push` в `main`.
+    -   Секреты репозитория: `SSH_HOST`, `SSH_USER`, `SSH_KEY` (приватный ключ для входа на ВМ).
+-   **Сеть и безопасность**: Открыть в Группе безопасности порты 8000 (или 80/443 при Nginx). При включённом UFW: `sudo ufw allow 8000/tcp` или `sudo ufw allow 80,443/tcp`.
+-   **Проверка доступности**:
+    -   На ВМ: `curl -I http://127.0.0.1:8000` и `docker compose logs --tail=100 web`.
+    -   Снаружи: `curl -I http://<IP>:8000`.
+-   **Домены и HTTPS (рекомендуется)** для поддомена `server.adaptaki.ru`:
+    -   DNS: A-запись `server → <IP>`.
+    -   Nginx reverse proxy на ВМ (проксировать на `http://127.0.0.1:8000`).
+    -   Let’s Encrypt: `certbot --nginx -d server.adaptaki.ru --redirect -m <email> --agree-tos -n`.
+-   **Частые проблемы**:
+    -   `permission denied /var/run/docker.sock`: добавить пользователя в группу `docker` (`sudo usermod -aG docker $USER`, затем `newgrp docker`/перелогин).
+    -   `400 Bad Request (DisallowedHost)`: добавить IP/домен в `DJANGO_ALLOWED_HOSTS` и `DJANGO_CSRF_TRUSTED_ORIGINS` и перезапустить.
+    -   `Permission denied (publickey)` при `git push`: настроить SSH‑ключ и `~/.ssh/config` для `github.com`.
