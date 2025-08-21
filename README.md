@@ -9,32 +9,35 @@
 ## TODO
 
 -   [x] Создал виртуальную машину на Яндекс облако и хранилище для файловъ
--   [x] Запустил проект с .venv локально
 -   [x] Запустил проект с docker-compose локально
 -   [ ] Проверить почту
 
-## Запуск локально (без Docker)
+## Запуск проекта (Docker Compose)
 
-1. Создайте и активируйте виртуальное окружение:
-    - `python3 -m venv .venv`
-    - `source .venv/bin/activate`
-2. Установите зависимости:
-    - `pip install -r server/requirements.txt`
-3. Примените миграции и запустите dev-сервер:
-    - `python server/manage.py migrate`
-    - `python server/manage.py runserver`
-4. Откройте: `http://127.0.0.1:8000/`
-
-## Запуск через Docker Compose (PostgreSQL)
+### Локальная разработка
 
 1. Создайте файл окружения из примера:
     - macOS/Linux: `cp env.example .env`
     - Windows PowerShell: `Copy-Item env.example .env`
-2. Соберите и запустите сервисы:
+2. Для разработки включите DEBUG в `.env`:
+    - `DJANGO_DEBUG=1`
+3. Соберите и запустите сервисы:
     - `docker compose up -d --build`
-3. Приложение доступно по адресу: `http://127.0.0.1:8000/`
-4. Остановка и очистка:
+4. Приложение доступно по адресу: `http://127.0.0.1:8000/`
+5. Остановка и очистка:
     - `docker compose down -v`
+
+### Продакшен
+
+1. Создайте файл окружения из примера:
+    - `cp env.example .env`
+2. Настройте продакшен переменные в `.env`:
+    - `DJANGO_DEBUG=0`
+    - `DJANGO_SECRET_KEY=<strong-secret>`
+    - `DJANGO_ALLOWED_HOSTS=<your-domain>,localhost`
+    - `DJANGO_CSRF_TRUSTED_ORIGINS=https://<your-domain>,http://localhost`
+3. Соберите и запустите сервисы:
+    - `docker compose up -d --build`
 
 Сервис `web` автоматически выполнит миграции и collectstatic перед стартом, работает через gunicorn. База данных — контейнер `db` (PostgreSQL 15). По умолчанию слушает `127.0.0.1:8000` (для работы за Nginx на сервере).
 
@@ -44,6 +47,8 @@
 
 -   `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `DB_HOST`, `DB_PORT`
 -   `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS`
+
+**Важно**: Для продакшена обязательно установите `DJANGO_DEBUG=0` и надёжный `DJANGO_SECRET_KEY`.
 
 ## Деплой на сервер (ручной)
 
@@ -77,15 +82,16 @@
 
 ## Примечания
 
--   В режиме без Docker `server/conf/settings.py` автоматически использует SQLite при отсутствии `POSTGRES_*` переменных.
--   Для продакшна выключайте DEBUG и задавайте надёжный `DJANGO_SECRET_KEY`.
+-   Для продакшена выключайте DEBUG и задавайте надёжный `DJANGO_SECRET_KEY`.
+-   Проект использует PostgreSQL в Docker Compose для всех окружений.
+-   Health‑эндпоинт доступен по адресу `/healthz/` для мониторинга.
 
 ### Конспект: что мы настроили и как деплоить
 
 -   **Инфраструктура**: ВМ в Яндекс.Облаке со статическим IP и доступом по SSH. Установлен Docker и Docker Compose V2 (команда `docker compose`).
 -   **Проект (backend)**: Django 5 + PostgreSQL. Перевели конфиг на переменные окружения (`DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS`). Добавили `gunicorn` и `whitenoise` для продакшна.
--   **Docker Compose**: Сервис `web` (gunicorn, авто `migrate` и `collectstatic`) и `db` (Postgres 15). В проде `web` слушает `127.0.0.1:8000` (за Nginx).
--   **Локальный запуск**: `cp env.example .env` → `docker compose up -d --build` → http://127.0.0.1:8000
+-   **Docker Compose**: Сервис `web` (gunicorn, авто `migrate` и `collectstatic`) и `db` (Postgres 15). В проде `web` слушает `127.0.0.1:8000` (за Nginx). Health‑эндпоинт `/healthz/` для мониторинга.
+-   **Локальный запуск**: `cp env.example .env` → `DJANGO_DEBUG=1` → `docker compose up -d --build` → http://127.0.0.1:8000
 -   **ВМ — первый запуск**:
     -   Клонировать репозиторий, создать `.env` (в проде `DJANGO_DEBUG=0`, добавить IP/домен в `ALLOWED_HOSTS` и `CSRF_TRUSTED_ORIGINS`).
     -   Запустить: `docker compose up -d --build`.
@@ -98,7 +104,7 @@
 -   **Домены и HTTPS (рекомендуется)** для поддомена `server.adaptaki.ru`:
     -   DNS: A-запись `server → <IP>`.
     -   Nginx reverse proxy на ВМ (проксировать на `http://127.0.0.1:8000`).
-    -   Let’s Encrypt: `certbot --nginx -d server.adaptaki.ru --redirect -m <email> --agree-tos -n`.
+    -   Let's Encrypt: `certbot --nginx -d server.adaptaki.ru --redirect -m <email> --agree-tos -n`.
 -   **Частые проблемы**:
     -   `permission denied /var/run/docker.sock`: добавить пользователя в группу `docker` (`sudo usermod -aG docker $USER`, затем `newgrp docker`/перелогин).
     -   `400 Bad Request (DisallowedHost)`: добавить IP/домен в `DJANGO_ALLOWED_HOSTS` и `DJANGO_CSRF_TRUSTED_ORIGINS` и перезапустить.
