@@ -36,14 +36,13 @@
 4. Остановка и очистка:
     - `docker compose down -v`
 
-Сервис `web` автоматически выполнит миграции и collectstatic перед стартом, работает через gunicorn. База данных — контейнер `db` (PostgreSQL 15).
+Сервис `web` автоматически выполнит миграции и collectstatic перед стартом, работает через gunicorn. База данных — контейнер `db` (PostgreSQL 15). По умолчанию слушает `127.0.0.1:8000` (для работы за Nginx на сервере).
 
 ## Переменные окружения
 
 Смотрите `env.example` для примера настроек PostgreSQL и Django. Ключевые параметры:
 
--   `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`
--   `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`
+-   `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `DB_HOST`, `DB_PORT`
 -   `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS`
 
 ## Деплой на сервер (ручной)
@@ -63,7 +62,8 @@
 5. Запуск:
     - `docker compose up -d --build`
 6. Проверка:
-    - открыть `http://89.169.182.234:8000/`
+    - за Nginx: открыть домен проекта по HTTPS (рекомендуется)
+    - без Nginx (временно): опубликовать порт как `8000:8000` и открыть `http://<IP>:8000/`
 
 Примечание: убедитесь, что в правилах фаервола (безопасности) Яндекс.Облака открыт TCP-порт 8000, либо настройте обратный прокси (nginx) на 80/443.
 
@@ -77,14 +77,14 @@
 
 ## Примечания
 
--   В режиме без Docker `server/conf/settings.py` автоматически использует SQLite при отсутствии `POSTGRES_*`/`DB_*`.
+-   В режиме без Docker `server/conf/settings.py` автоматически использует SQLite при отсутствии `POSTGRES_*` переменных.
 -   Для продакшна выключайте DEBUG и задавайте надёжный `DJANGO_SECRET_KEY`.
 
 ### Конспект: что мы настроили и как деплоить
 
 -   **Инфраструктура**: ВМ в Яндекс.Облаке со статическим IP и доступом по SSH. Установлен Docker и Docker Compose V2 (команда `docker compose`).
 -   **Проект (backend)**: Django 5 + PostgreSQL. Перевели конфиг на переменные окружения (`DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS`). Добавили `gunicorn` и `whitenoise` для продакшна.
--   **Docker Compose**: Сервис `web` (gunicorn, авто `migrate` и `collectstatic`) и `db` (Postgres 15). Порт `8000` опубликован наружу.
+-   **Docker Compose**: Сервис `web` (gunicorn, авто `migrate` и `collectstatic`) и `db` (Postgres 15). В проде `web` слушает `127.0.0.1:8000` (за Nginx).
 -   **Локальный запуск**: `cp env.example .env` → `docker compose up -d --build` → http://127.0.0.1:8000
 -   **ВМ — первый запуск**:
     -   Клонировать репозиторий, создать `.env` (в проде `DJANGO_DEBUG=0`, добавить IP/домен в `ALLOWED_HOSTS` и `CSRF_TRUSTED_ORIGINS`).
@@ -94,7 +94,7 @@
 -   **Сеть и безопасность**: Открыть в Группе безопасности порты 8000 (или 80/443 при Nginx). При включённом UFW: `sudo ufw allow 8000/tcp` или `sudo ufw allow 80,443/tcp`.
 -   **Проверка доступности**:
     -   На ВМ: `curl -I http://127.0.0.1:8000` и `docker compose logs --tail=100 web`.
-    -   Снаружи: `curl -I http://<IP>:8000`.
+    -   Снаружи: через домен/HTTPS за Nginx.
 -   **Домены и HTTPS (рекомендуется)** для поддомена `server.adaptaki.ru`:
     -   DNS: A-запись `server → <IP>`.
     -   Nginx reverse proxy на ВМ (проксировать на `http://127.0.0.1:8000`).
