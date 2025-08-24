@@ -2,7 +2,7 @@ import json
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-from tinymce.models import HTMLField
+
 from graph.models import Node
 
 
@@ -28,13 +28,13 @@ class Question(models.Model):
         verbose_name='Название задачи (опционально)'
     )
 
-    # Условие задачи с поддержкой TinyMCE + MathLive
-    condition = HTMLField(
+    # Условие задачи
+    condition = models.TextField(
         verbose_name='Условие задачи'
     )
 
     # Разбор задачи
-    solution = HTMLField(
+    solution = models.TextField(
         blank=True,
         verbose_name='Разбор задачи'
     )
@@ -249,7 +249,7 @@ class QuestionOption(models.Model):
         verbose_name='Задача'
     )
 
-    text = HTMLField(
+    text = models.TextField(
         verbose_name='Текст варианта'
     )
 

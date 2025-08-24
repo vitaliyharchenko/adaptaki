@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from tinymce.widgets import TinyMCE
+
 from .models import Question, QuestionOption, QuestionType, GradingPolicy
 
 
@@ -12,11 +12,6 @@ class QuestionOptionInline(admin.TabularInline):
     extra = 1
     fields = ['text', 'is_correct', 'order']
     ordering = ['order']
-
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        if db_field.name == 'text':
-            kwargs['widget'] = TinyMCE(attrs={'cols': 80, 'rows': 10})
-        return super().formfield_for_dbfield(db_field, **kwargs)
 
 
 @admin.register(Question)
@@ -64,11 +59,6 @@ class QuestionAdmin(admin.ModelAdmin):
     readonly_fields = ['created_at', 'updated_at']
 
     inlines = [QuestionOptionInline]
-
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        if db_field.name in ['condition', 'solution']:
-            kwargs['widget'] = TinyMCE(attrs={'cols': 80, 'rows': 20})
-        return super().formfield_for_dbfield(db_field, **kwargs)
 
     actions = ['copy_questions', 'activate_questions', 'deactivate_questions']
 

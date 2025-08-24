@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'social_django',
     'django_filters',
-    'tinymce',
+
 
     # Local apps
     'users',
@@ -237,18 +237,3 @@ LOGIN_URL = '/admin/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_URL = '/admin/logout/'
 LOGOUT_REDIRECT_URL = '/'
-
-# TinyMCE settings
-TINYMCE_DEFAULT_CONFIG = {
-    'height': 400,
-    'width': '100%',
-    'selector': 'textarea',
-    'theme': 'silver',
-    'plugins': 'link image media table lists code',
-    'toolbar': 'bold italic underline | link image media table | code',
-    'menubar': False,
-    'statusbar': True,
-}
-
-TINYMCE_SPELLCHECKER = True
-TINYMCE_COMPRESSOR = False
