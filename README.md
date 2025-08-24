@@ -74,6 +74,23 @@ docker-compose exec web python manage.py createsuperuser
 -   `GET /api/users/profile/` - Получение профиля пользователя
 -   `PUT /api/users/profile/update/` - Обновление профиля пользователя
 
+### Граф знаний (Graph API)
+
+-   `GET /api/graph/subjects/` - Получение списка предметов
+-   `POST /api/graph/subjects/` - Создание нового предмета
+-   `GET /api/graph/concepts/` - Получение списка концептов
+-   `POST /api/graph/concepts/` - Создание нового концепта
+-   `GET /api/graph/nodes/` - Получение списка узлов графа
+-   `POST /api/graph/nodes/` - Создание нового узла
+-   `GET /api/graph/node-relations/` - Получение списка связей между узлами
+-   `POST /api/graph/node-relations/` - Создание новой связи
+
+**Фильтрация для узлов:**
+
+-   `GET /api/graph/nodes/?subject=1` - Фильтр по предмету
+-   `GET /api/graph/nodes/?concept=1` - Фильтр по концепту
+-   `GET /api/graph/nodes/?search=квадрат` - Поиск по названию
+
 ### Социальная аутентификация
 
 -   `GET /social-auth/login/google-oauth2/` - Вход через Google
@@ -118,11 +135,19 @@ adaptaki/
     │   ├── serializers.py
     │   ├── urls.py
     │   └── admin.py
+    ├── graph/
+    │   ├── models.py
+    │   ├── views.py
+    │   ├── serializers.py
+    │   ├── urls.py
+    │   └── admin.py
     ├── requirements.txt
     └── manage.py
 ```
 
-## Модель пользователя
+## Модели
+
+### Модель пользователя
 
 Кастомная модель `CustomUser` наследуется от `AbstractBaseUser` и `PermissionsMixin`:
 
@@ -131,9 +156,56 @@ adaptaki/
 -   `is_staff`, `is_active` - статусы пользователя
 -   `date_joined` - дата регистрации
 
+### Модели графа знаний
+
+**Subject** - Предмет (физика, математика и т.д.):
+
+-   `title` - название предмета
+
+**Concept** - Большая тема, объединяющая несколько вершин:
+
+-   `title` - название концепта
+-   `subject` - связь с предметом
+-   `is_active` - активен ли концепт
+
+**Node** - Узел графа знаний:
+
+-   `title` - название узла
+-   `type` - тип узла (KN - понятие, UN - закономерность, CS - кейс, SK - навык)
+-   `subject` - связь с предметом
+-   `concept` - связь с концептом
+-   `testability` - проверяемость узла
+
+**NodeRelation** - Связь между узлами графа:
+
+-   `parent` - родительский узел
+-   `child` - дочерний узел
+
 ## Разработка
 
-### Локальная разработка
+### Рекомендуемый способ разработки через Docker Compose
+
+**Важно:** Все команды Django (создание приложений, миграции, создание суперпользователя и т.д.) должны выполняться через Docker Compose для обеспечения консистентности окружения.
+
+```bash
+# Создание нового Django приложения
+docker-compose exec web python manage.py startapp myapp
+
+# Применение миграций
+docker-compose exec web python manage.py makemigrations
+docker-compose exec web python manage.py migrate
+
+# Создание суперпользователя
+docker-compose exec web python manage.py createsuperuser
+
+# Сбор статических файлов
+docker-compose exec web python manage.py collectstatic
+
+# Запуск shell
+docker-compose exec web python manage.py shell
+```
+
+### Локальная разработка (альтернативный способ)
 
 ```bash
 # Активация виртуального окружения
@@ -168,6 +240,29 @@ curl -X POST http://localhost:8000/api/token/ \
 # Получение профиля (с токеном)
 curl -X GET http://localhost:8000/api/users/profile/ \
   -H "Authorization: Bearer <your-jwt-token>"
+
+# Тестирование Graph API
+curl -X GET http://localhost:8000/api/graph/subjects/ \
+  -H "Authorization: Bearer <your-jwt-token>"
+
+curl -X POST http://localhost:8000/api/graph/subjects/ \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <your-jwt-token>" \
+  -d '{"title":"Химия"}'
+```
+
+### Запуск тестов
+
+```bash
+# Запуск всех тестов
+docker-compose exec web python manage.py test
+
+# Запуск тестов конкретного приложения
+docker-compose exec web python manage.py test users
+docker-compose exec web python manage.py test graph
+
+# Запуск конкретного теста
+docker-compose exec web python manage.py test graph.tests.GraphModelsTest
 ```
 
 ## Лицензия

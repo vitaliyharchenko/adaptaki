@@ -55,9 +55,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'social_django',
+    'django_filters',
 
     # Local apps
     'users',
+    'graph',
 ]
 
 MIDDLEWARE = [

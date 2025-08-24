@@ -43,6 +43,9 @@ urlpatterns = [
     # User endpoints
     path('api/users/', include('users.urls')),
 
+    # Graph endpoints
+    path('api/graph/', include('graph.urls')),
+
     # Social Auth endpoints
     path('social-auth/', include('social_django.urls', namespace='social')),
 ]
