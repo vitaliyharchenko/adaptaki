@@ -46,6 +46,12 @@ urlpatterns = [
     # Graph endpoints
     path('api/graph/', include('graph.urls')),
 
+    # Questions endpoints
+    path('api/questions/', include('questions.urls')),
+
+    # TinyMCE endpoints
+    path('tinymce/', include('tinymce.urls')),
+
     # Social Auth endpoints
     path('social-auth/', include('social_django.urls', namespace='social')),
 ]
