@@ -1,126 +1,175 @@
-# adaptaki
+# Adaptaki - Django проект с кастомной аутентификацией
 
-## Инфраструктура
+## Описание
 
-Яндекс Виртуальная машина с доступом по ssh
-`ssh vitaliyharchenko@89.169.182.234`
+Django проект с кастомной моделью пользователя, DRF, JWT-аутентификацией и авторизацией через социальные сети.
 
-## TODO
+## Возможности
 
--   [x] Создал виртуальную машину на Яндекс облако и хранилище для файлов
--   [x] Запустил проект с docker-compose локально
--   [x] Настроил CI\CD через GitHub
--   [x] Настроил доменное имя
--   [x] Настроил nginx
--   [x] Настроил https
--   [ ] Создал основные модели данных
+-   ✅ Кастомная модель пользователя с email в качестве USERNAME_FIELD
+-   ✅ Django REST Framework с JWT-аутентификацией
+-   ✅ Авторизация через Google OAuth2
+-   ✅ Авторизация через VK OAuth2
+-   ✅ API эндпоинты для регистрации и управления профилем
+-   ✅ Docker Compose для развертывания
 
-## Health check
+## Быстрый старт
 
-`/healthz/`
+### 1. Клонирование и настройка
 
-## Документация
+```bash
+git clone <repository-url>
+cd adaptaki
+cp env.example .env
+```
 
-### API
+### 2. Настройка переменных окружения
 
-[OpenAPI](http://127.0.0.1:8000/api/schema/swagger-ui/)
+Отредактируйте файл `.env`:
 
-### Backend
+```env
+# Database configuration (PostgreSQL)
+POSTGRES_DB=adaptaki
+POSTGRES_USER=adaptaki
+POSTGRES_PASSWORD=adaptaki
+DB_HOST=db
+DB_PORT=5432
 
-## Запуск проекта (Docker Compose)
+# Django settings
+DJANGO_DEBUG=1
+DJANGO_SECRET_KEY=your-secret-key-here
+DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
+DJANGO_CSRF_TRUSTED_ORIGINS=http://127.0.0.1,http://localhost
+
+# Social Auth settings
+GOOGLE_OAUTH2_KEY=your-google-oauth2-key
+GOOGLE_OAUTH2_SECRET=your-google-oauth2-secret
+VK_OAUTH2_KEY=your-vk-oauth2-key
+VK_OAUTH2_SECRET=your-vk-oauth2-secret
+```
+
+### 3. Запуск с Docker Compose
+
+```bash
+docker-compose up -d
+```
+
+### 4. Создание суперпользователя
+
+```bash
+docker-compose exec web python manage.py createsuperuser
+```
+
+## API Эндпоинты
+
+### JWT Аутентификация
+
+-   `POST /api/token/` - Получение JWT токенов
+-   `POST /api/token/refresh/` - Обновление JWT токена
+-   `POST /api/token/verify/` - Проверка JWT токена
+
+### Пользователи
+
+-   `POST /api/users/register/` - Регистрация нового пользователя
+-   `GET /api/users/profile/` - Получение профиля пользователя
+-   `PUT /api/users/profile/update/` - Обновление профиля пользователя
+
+### Социальная аутентификация
+
+-   `GET /social-auth/login/google-oauth2/` - Вход через Google
+-   `GET /social-auth/login/vk-oauth2/` - Вход через VK
+-   `GET /api/users/social-auth-redirect/` - Редирект после социальной аутентификации
+
+## Настройка социальной аутентификации
+
+### Google OAuth2
+
+1. Перейдите в [Google Cloud Console](https://console.cloud.google.com/)
+2. Создайте новый проект или выберите существующий
+3. Включите Google+ API
+4. Создайте OAuth 2.0 credentials
+5. Добавьте разрешенные URI перенаправления:
+    - `http://localhost:8000/social-auth/complete/google-oauth2/`
+6. Скопируйте Client ID и Client Secret в `.env`
+
+### VK OAuth2
+
+1. Перейдите в [VK Developers](https://vk.com/dev)
+2. Создайте новое приложение
+3. В настройках приложения укажите:
+    - Site URL: `http://localhost:8000`
+    - Base domain: `localhost`
+4. Скопируйте Application ID и Secure Key в `.env`
+
+## Структура проекта
+
+```
+adaptaki/
+├── docker-compose.yml
+├── env.example
+├── README.md
+└── server/
+    ├── conf/
+    │   ├── settings.py
+    │   └── urls.py
+    ├── users/
+    │   ├── models.py
+    │   ├── views.py
+    │   ├── serializers.py
+    │   ├── urls.py
+    │   └── admin.py
+    ├── requirements.txt
+    └── manage.py
+```
+
+## Модель пользователя
+
+Кастомная модель `CustomUser` наследуется от `AbstractBaseUser` и `PermissionsMixin`:
+
+-   `email` - основной идентификатор пользователя
+-   `first_name`, `last_name` - имя и фамилия
+-   `is_staff`, `is_active` - статусы пользователя
+-   `date_joined` - дата регистрации
+
+## Разработка
 
 ### Локальная разработка
 
-1. Создайте файл окружения из примера:
-    - macOS/Linux: `cp env.example .env`
-    - Windows PowerShell: `Copy-Item env.example .env`
-2. Для разработки включите DEBUG в `.env`:
-    - `DJANGO_DEBUG=1`
-3. Соберите и запустите сервисы:
-    - `docker compose up -d --build`
-4. Приложение доступно по адресу: `http://127.0.0.1:8000/`
-5. Остановка и очистка:
-    - `docker compose down -v`
+```bash
+# Активация виртуального окружения
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# или
+venv\Scripts\activate  # Windows
 
-### Продакшен
+# Установка зависимостей
+pip install -r server/requirements.txt
 
-1. Создайте файл окружения из примера:
-    - `cp env.example .env`
-2. Настройте продакшен переменные в `.env`:
-    - `DJANGO_DEBUG=0`
-    - `DJANGO_SECRET_KEY=<strong-secret>`
-    - `DJANGO_ALLOWED_HOSTS=<your-domain>,localhost`
-    - `DJANGO_CSRF_TRUSTED_ORIGINS=https://<your-domain>,http://localhost`
-3. Соберите и запустите сервисы:
-    - `docker compose up -d --build`
+# Применение миграций
+python server/manage.py migrate
 
-Сервис `web` автоматически выполнит миграции и collectstatic перед стартом, работает через gunicorn. База данных — контейнер `db` (PostgreSQL 15). По умолчанию слушает `127.0.0.1:8000` (для работы за Nginx на сервере).
+# Запуск сервера разработки
+python server/manage.py runserver
+```
 
-## Переменные окружения
+### Тестирование API
 
-Смотрите `env.example` для примера настроек PostgreSQL и Django. Ключевые параметры:
+```bash
+# Регистрация пользователя
+curl -X POST http://localhost:8000/api/users/register/ \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","password":"testpass123","password_confirm":"testpass123","first_name":"Test","last_name":"User"}'
 
--   `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `DB_HOST`, `DB_PORT`
--   `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS`
+# Получение JWT токена
+curl -X POST http://localhost:8000/api/token/ \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","password":"testpass123"}'
 
-**Важно**: Для продакшена обязательно установите `DJANGO_DEBUG=0` и надёжный `DJANGO_SECRET_KEY`.
+# Получение профиля (с токеном)
+curl -X GET http://localhost:8000/api/users/profile/ \
+  -H "Authorization: Bearer <your-jwt-token>"
+```
 
-## Деплой на сервер (ручной)
+## Лицензия
 
-1. Подключиться по SSH:
-    - `ssh vitaliyharchenko@89.169.182.234`
-2. Установить git (если нет):
-    - Ubuntu/Debian: `sudo apt update && sudo apt install -y git`
-3. Клонировать репозиторий (первый раз):
-    - `git clone https://github.com/vitaliyharchenko/adaptaki.git && cd adaptaki`
-    - далее: `git pull`
-4. Создать `.env` на сервере (на основе `env.example`) с прод-настройками:
-    - `DJANGO_DEBUG=0`
-    - `DJANGO_ALLOWED_HOSTS=89.169.182.234,localhost`
-    - `DJANGO_CSRF_TRUSTED_ORIGINS=http://89.169.182.234,http://localhost`
-    - замените пароли на надёжные.
-5. Запуск:
-    - `docker compose up -d --build`
-6. Проверка:
-    - за Nginx: открыть домен проекта по HTTPS (рекомендуется)
-    - без Nginx (временно): опубликовать порт как `8000:8000` и открыть `http://<IP>:8000/`
-
-Примечание: убедитесь, что в правилах фаервола (безопасности) Яндекс.Облака открыт TCP-порт 8000, либо настройте обратный прокси (nginx) на 80/443.
-
-## CI/CD через GitHub Actions (деплой по SSH)
-
-1. Добавьте секреты репозитория:
-    - `SSH_HOST=89.169.182.234`
-    - `SSH_USER=vitaliyharchenko`
-    - `SSH_KEY` — приватный ключ (PEM) пользователя для доступа к ВМ
-2. Workflow запускается на `push` в `main`: он подключается по SSH к серверу, делает `git pull` и `docker compose up -d --build`.
-
-## Примечания
-
--   Для продакшена выключайте DEBUG и задавайте надёжный `DJANGO_SECRET_KEY`.
--   Проект использует PostgreSQL в Docker Compose для всех окружений.
--   Health‑эндпоинт доступен по адресу `/healthz/` для мониторинга.
-
-### Конспект: что мы настроили и как деплоить
-
--   **Инфраструктура**: ВМ в Яндекс.Облаке со статическим IP и доступом по SSH. Установлен Docker и Docker Compose V2 (команда `docker compose`).
--   **Проект (backend)**: Django 5 + PostgreSQL. Перевели конфиг на переменные окружения (`DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS`). Добавили `gunicorn` и `whitenoise` для продакшна.
--   **Docker Compose**: Сервис `web` (gunicorn, авто `migrate` и `collectstatic`) и `db` (Postgres 15). В проде `web` слушает `127.0.0.1:8000` (за Nginx). Health‑эндпоинт `/healthz/` для мониторинга.
--   **Локальный запуск**: `cp env.example .env` → `DJANGO_DEBUG=1` → `docker compose up -d --build` → http://127.0.0.1:8000
--   **ВМ — первый запуск**:
-    -   Клонировать репозиторий, создать `.env` (в проде `DJANGO_DEBUG=0`, добавить IP/домен в `ALLOWED_HOSTS` и `CSRF_TRUSTED_ORIGINS`).
-    -   Запустить: `docker compose up -d --build`.
--   **CI/CD (GitHub Actions)**: Добавлен workflow `.github/workflows/deploy.yml` — деплой по SSH на ВМ при `push` в `main`.
-    -   Секреты репозитория: `SSH_HOST`, `SSH_USER`, `SSH_KEY` (приватный ключ для входа на ВМ).
--   **Сеть и безопасность**: Открыть в Группе безопасности порты 8000 (или 80/443 при Nginx). При включённом UFW: `sudo ufw allow 8000/tcp` или `sudo ufw allow 80,443/tcp`.
--   **Проверка доступности**:
-    -   На ВМ: `curl -I http://127.0.0.1:8000` и `docker compose logs --tail=100 web`.
-    -   Снаружи: через домен/HTTPS за Nginx.
--   **Домены и HTTPS (рекомендуется)** для поддомена `server.adaptaki.ru`:
-    -   DNS: A-запись `server → <IP>`.
-    -   Nginx reverse proxy на ВМ (проксировать на `http://127.0.0.1:8000`).
-    -   Let's Encrypt: `certbot --nginx -d server.adaptaki.ru --redirect -m <email> --agree-tos -n`.
--   **Частые проблемы**:
-    -   `permission denied /var/run/docker.sock`: добавить пользователя в группу `docker` (`sudo usermod -aG docker $USER`, затем `newgrp docker`/перелогин).
-    -   `400 Bad Request (DisallowedHost)`: добавить IP/домен в `DJANGO_ALLOWED_HOSTS` и `DJANGO_CSRF_TRUSTED_ORIGINS` и перезапустить.
-    -   `Permission denied (publickey)` при `git push`: настроить SSH‑ключ и `~/.ssh/config` для `github.com`.
+MIT License
