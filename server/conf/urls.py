@@ -49,6 +49,8 @@ urlpatterns = [
     # Questions endpoints
     path('api/questions/', include('questions.urls')),
 
+    # Exams endpoints
+    path('api/exams/', include('exams.urls')),
 
 
     # Social Auth endpoints

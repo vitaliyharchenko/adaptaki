@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'users',
     'graph',
     'questions',
+    'exams',
 ]
 
 MIDDLEWARE = [

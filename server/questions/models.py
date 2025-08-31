@@ -75,6 +75,13 @@ class Question(models.Model):
         verbose_name='Аналогичные задачи'
     )
 
+    # Привязка к подтемам экзаменов
+    exam_topics = models.ManyToManyField(
+        'exams.ExamTopic',
+        blank=True,
+        verbose_name='Подтемы экзаменов'
+    )
+
     # Метаданные
     is_active = models.BooleanField(
         default=True,
