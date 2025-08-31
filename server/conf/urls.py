@@ -52,6 +52,8 @@ urlpatterns = [
     # Exams endpoints
     path('api/exams/', include('exams.urls')),
 
+    # Lectures endpoints
+    path('api/lectures/', include('lectures.urls')),
 
     # Social Auth endpoints
     path('social-auth/', include('social_django.urls', namespace='social')),

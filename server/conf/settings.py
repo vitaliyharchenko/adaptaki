@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'graph',
     'questions',
     'exams',
+    'lectures',
 ]
 
 MIDDLEWARE = [
