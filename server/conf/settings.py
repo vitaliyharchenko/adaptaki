@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'social_django',
     'django_filters',
-
+    'tinymce',
 
     # Local apps
     'users',
@@ -239,3 +239,57 @@ LOGIN_URL = '/admin/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_URL = '/admin/logout/'
 LOGOUT_REDIRECT_URL = '/'
+
+# Media files (загруженные пользователем файлы)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# TinyMCE Configuration
+TINYMCE_DEFAULT_CONFIG = {
+    'height': 360,
+    'width': 'auto',
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 20,
+    'selector': 'textarea',
+    'theme': 'silver',
+    'plugins': '''
+        save link image media preview codesample contextmenu
+        table code lists fullscreen insertdatetime nonbreaking
+        contextmenu directionality searchreplace wordcount visualblocks
+        visualchars code fullscreen autolink lists charmap print preview
+        anchor pagebreak spellchecker
+    ''',
+    'toolbar1': '''
+        fullscreen preview bold italic underline | fontselect,
+        fontsizeselect | forecolor backcolor | alignleft aligncenter |
+        alignright alignjustify | indent outdent | bullist numlist table |
+        | link image media | codesample |
+    ''',
+    'toolbar2': '''
+        visualblocks visualchars |
+        charmap hr pagebreak nonbreaking anchor | code |
+    ''',
+    'contextmenu': 'formats | link image',
+    'menubar': True,
+    'statusbar': True,
+    'language': 'en',
+    'content_css': '/static/css/tinymce_content.css',
+    'relative_urls': False,
+    'remove_script_host': False,
+    'convert_urls': False,
+    'entity_encoding': 'raw',
+    'extended_valid_elements': 'span[*],div[*],p[*],br,hr,img[*],a[*],ul,ol,li,table,tr,td,th,tbody,thead,tfoot,blockquote,pre,code,em,strong,b,i,u,strike,sub,sup,h1,h2,h3,h4,h5,h6',
+    'valid_children': '+body[style]',
+    'verify_html': False,
+    'cleanup': False,
+    'cleanup_on_startup': False,
+    'element_format': 'html',
+    'keep_styles': True,
+    'preview_styles': 'font-family font-size font-weight font-style text-decoration text-transform',
+    'content_style': '''
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 14px; line-height: 1.6; }
+        .code { font-family: 'Courier New', monospace; background-color: #f5f5f5; padding: 2px 4px; border-radius: 3px; }
+    ''',
+
+}
+

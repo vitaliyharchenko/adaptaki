@@ -2,6 +2,7 @@ import json
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from tinymce.models import HTMLField
 
 from graph.models import Node
 
@@ -29,12 +30,12 @@ class Question(models.Model):
     )
 
     # Условие задачи
-    condition = models.TextField(
+    condition = HTMLField(
         verbose_name='Условие задачи'
     )
 
     # Разбор задачи
-    solution = models.TextField(
+    solution = HTMLField(
         blank=True,
         verbose_name='Разбор задачи'
     )
@@ -256,7 +257,7 @@ class QuestionOption(models.Model):
         verbose_name='Задача'
     )
 
-    text = models.TextField(
+    text = HTMLField(
         verbose_name='Текст варианта'
     )
 

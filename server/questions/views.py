@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from rest_framework import viewsets, status, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -7,11 +8,14 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Count, Q
 import random
 
-from .models import Question, QuestionOption, QuestionType
+from .models import Question, QuestionOption, QuestionType, GradingPolicy
 from .serializers import (
     QuestionSerializer, QuestionCreateSerializer, QuestionListSerializer,
     QuestionAnswerSerializer, QuestionResultSerializer
 )
+
+
+
 
 
 class QuestionViewSet(viewsets.ModelViewSet):
@@ -250,3 +254,6 @@ class QuestionViewSet(viewsets.ModelViewSet):
                 {'error': 'Задача не найдена'},
                 status=status.HTTP_404_NOT_FOUND
             )
+
+
+

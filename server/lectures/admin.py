@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from tinymce.widgets import TinyMCE
 from .models import Lecture
+from questions.widgets import MathTinyMCE
 
 
 @admin.register(Lecture)
@@ -10,6 +12,10 @@ class LectureAdmin(admin.ModelAdmin):
     search_fields = ['title', 'content', 'node__title', 'concept__title']
     list_editable = ['order', 'is_active']
     readonly_fields = ['created_at', 'updated_at', 'vk_embed_preview']
+    
+    formfield_overrides = {
+        'content': {'widget': MathTinyMCE()},
+    }
     
     fieldsets = (
         ('Основная информация', {
@@ -75,7 +81,4 @@ class LectureAdmin(admin.ModelAdmin):
         css = {
             'all': ('admin/css/lecture_admin.css',)
         }
-        js = (
-            'https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js',
-            'admin/js/lecture_admin.js',
-        )
+        js = ('admin/js/lecture_admin.js',)

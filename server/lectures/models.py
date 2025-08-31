@@ -2,6 +2,7 @@ import re
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from tinymce.models import HTMLField
 from graph.models import Node, Concept
 
 
@@ -15,7 +16,7 @@ class Lecture(models.Model):
         verbose_name='Название лекции'
     )
     
-    content = models.TextField(
+    content = HTMLField(
         verbose_name='Содержание лекции',
         help_text='Используйте редактор для добавления текста, изображений и формул'
     )

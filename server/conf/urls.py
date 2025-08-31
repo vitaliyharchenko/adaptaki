@@ -23,6 +23,8 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 @csrf_exempt
@@ -57,4 +59,12 @@ urlpatterns = [
 
     # Social Auth endpoints
     path('social-auth/', include('social_django.urls', namespace='social')),
+    
+    # TinyMCE endpoints
+    path('tinymce/', include('tinymce.urls')),
 ]
+
+# Добавляем маршруты для медиа-файлов в режиме разработки
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

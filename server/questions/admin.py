@@ -2,8 +2,10 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from tinymce.widgets import TinyMCE
 
 from .models import Question, QuestionOption, QuestionType, GradingPolicy
+from .widgets import MathTinyMCE
 
 
 class QuestionOptionInline(admin.TabularInline):
@@ -12,6 +14,10 @@ class QuestionOptionInline(admin.TabularInline):
     extra = 1
     fields = ['text', 'is_correct', 'order']
     ordering = ['order']
+    
+    formfield_overrides = {
+        'text': {'widget': MathTinyMCE(attrs={'rows': 3})},
+    }
 
 
 @admin.register(Question)
@@ -59,6 +65,11 @@ class QuestionAdmin(admin.ModelAdmin):
     readonly_fields = ['created_at', 'updated_at']
 
     inlines = [QuestionOptionInline]
+
+    formfield_overrides = {
+        'condition': {'widget': MathTinyMCE()},
+        'solution': {'widget': MathTinyMCE()},
+    }
 
     actions = ['copy_questions', 'activate_questions', 'deactivate_questions']
 
@@ -155,7 +166,14 @@ class QuestionOptionAdmin(admin.ModelAdmin):
     search_fields = ['text', 'question__title']
     ordering = ['question', 'order']
 
+    formfield_overrides = {
+        'text': {'widget': MathTinyMCE()},
+    }
+
     def text_preview(self, obj):
         """Предварительный просмотр текста"""
-        return obj.text[:100] + '...' if len(obj.text) > 100 else obj.text
+        # Убираем HTML теги для предварительного просмотра
+        import re
+        clean_text = re.sub(r'<[^>]+>', '', obj.text)
+        return clean_text[:100] + '...' if len(clean_text) > 100 else clean_text
     text_preview.short_description = 'Текст'
